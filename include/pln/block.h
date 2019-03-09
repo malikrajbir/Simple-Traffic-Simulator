@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include "../vhc/vehicle.h"
+#include "/Users/rajbirmalik/OneDrive - IIT Delhi/COP 290/Simple Traffic Simulator/include/vhc/vehicle.h"
+
 
 #ifndef SP
 #define SP
@@ -8,15 +9,13 @@
 class Block {
 private:
     bool blocked; // Whether filled or not
-    int x, y;   // X & Y coordinates
     char sym;   // Symbol for the char
-    Vehicle vcl;
+    Vehicle* vcl = NULL;
 public:
-    Block(int xs, int ys) {
+    Block() {
         blocked = false;
-        x = xs;
-        y = ys;
         sym = '.';
+        vcl = NULL;
     }
 
     void block() {
@@ -30,15 +29,19 @@ public:
         return blocked;
     }
 
-    void stepped(Vehicle v1) {
+    void stepped(Vehicle* v1) {
         block();
         vcl = v1;
-        sym = v1.symbol;
+        if( v1 != NULL)
+            sym = v1->symbol;
+        else
+            sym = '+';
     }
 
     void left() {
         unblock();
         sym = '.';
+        vcl = NULL;
     }
 
     char symbol() {
