@@ -4,6 +4,9 @@
 #include <vector>
 #include <map>
 
+// For time control
+#include<unistd.h>
+
 // Vehicle class
 #include "vehicle.h"
 
@@ -67,6 +70,7 @@ public:
 
     // Visualising the road on the terminal
     void show_road() {
+        cout << "\033[H\033[J";
         cout << "Time: " << t << "\n";
         //-------- Line
         for(int i=ln; i>0; --i)
@@ -82,6 +86,7 @@ public:
         for(int i=ln; i>0; --i)
             cout << "--";
         cout << "\n";
+        usleep(500*1000);
     }
 
     // Turn signal to red
