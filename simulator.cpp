@@ -1,52 +1,44 @@
 #include <iostream>
-
-#include <fstream>
-#include <sstream>
-
-#include <pthread.h>
-
-#include <vector>
 #include <map>
+#include <vector>
 
-#include "include/pln/road.h"
-#include "include/pln/block.h"
+#include "include/road.h"
 #include "include/vehicle.h"
+#include "include/functions.h"
 
 using namespace std;
 
-int main(int argc, char const *argv[])
-{
-    map<string, vector<int>> vhs;
+void pass_time(Road& r) {
+    move_vehicles(r);
+    r.inc_time();
+    r.show_road();
+}
 
-    Road rd = Road(30, 5, 15);
+void add_v(Road& r, Vehicle& v) {
+    move_vehicles(r);
+    add_vehicle(v, r);
+    r.inc_time();
+    r.show_road();
+}
 
-    int msp = 1, mac = 1;
+int main(int argc, char const *argv[]) {
+    // Setting the road
+    Road r = Road(30, 8, 15);
+    // Setting the vehicles
+    Vehicle car1 = Vehicle({2, 2, 1, 1}, 'c');
+    Vehicle car2 = Vehicle({2, 2, 1, 1}, 'c');
+    Vehicle bike = Vehicle({2, 1, 1, 1}, 'b');
+    Vehicle Bus = Vehicle({3, 2, 1, 1}, 'B');
+    Vehicle Truck = Vehicle({4, 2, 1, 1}, 'T');
 
-    vhs.insert(pair<string, int>("Car", vector<int>{2, 2, 1, 1}));
-    vhs.insert(pair<string, int>("bike", vector<int>{2, 1, 1, 1}));
-    vhs.insert(pair<string, int>("Bus", vector<int>{3, 2, 1, 1}));
-    vhs.insert(pair<string, int>("Truck", vector<int>{4, 2, 1, 1}));
-
-    // Start
-    rd.signal_red();
-    sleep(1);
-    rd.show();
-    Vehicle('C', vhs["Car"], &rd);
-    sleep(1);
-    rd.time_step();
-    Vehicle('b', vhs["Bike"], &rd);
-    sleep(1);
-    rd.time_step();
-    for(int i=0; i<15; i++) {
-        sleep(1);
-        rd.time_step();
-    }
-    rd.signal_green();
-    sleep(1);
-    rd.show();
-    for(int i=0; i<15; i++) {
-        sleep(1);
-        rd.time_step();
-    }
+    add_v(r, car1);
+    //
+    add_v(r, bike);
+    //
+    for(int i=0; i<10; i++)
+        pass_time(r);
+    r.signal_red();
+    for(int i=0; i<10; i++)
+        pass_time(r);
     return 0;
 }
