@@ -44,7 +44,7 @@ int main(int argc, char const *argv[]) {
     r.signal_green();
     add_v(r, Truck);
     add_v(r, car2);
-    for(int i=0; i<10; i++)
+    while(r.current_vcls().size() != 0)
         pass_time(r);
     return 0;
 }

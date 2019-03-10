@@ -102,6 +102,7 @@ void move_vehicles(Road& r) {
             if(movable(temp, r)) {
                 if(!set_vehicle(temp, r)) {
                     r.current_vcls().erase(it);
+                    it--;
                     break;
                 }
             }
