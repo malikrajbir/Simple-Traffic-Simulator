@@ -85,7 +85,7 @@ public:
 
     // Visualising the road on the terminal
     void show_road() {
-        cout << "\033[H\033[J";
+        // cout << "\033[H\033[J";
         cout << "Time: " << t << "\n";
         //-------- Line
         for(int i=ln; i>0; --i)

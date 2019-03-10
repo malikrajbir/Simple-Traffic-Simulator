@@ -64,18 +64,23 @@ int main(int argc, char const *argv[]) {
     map<string, Vehicle> vehicle_types;
 
     string filename = "config.ini";
-    ifstream file(filename);
+    ifstream file;
+    file.open(filename);
     string line;
 
-    // if(file.is_open()) {
+    if(file.is_open()) {
         while( getline(file,line) ) {
             // Comment or free line
-            if(line.at(0) == '#' || line.length() == 0)
+            if(line.length() == 0)
                 continue;
-
+            if(line.at(0)=='#')
+                continue;
+            
+            cout<<line<<endl;
+            
             istringstream token(line);  // The tokeniser
             string word;    // The latest token
-
+            
             // Processing the line
             while(token >> word) {
                 // Comment start in a line
@@ -99,7 +104,7 @@ int main(int argc, char const *argv[]) {
                                 token >> word;
                                 ln = stoi(word);
                             }
-                            else if(word.compare("Road_width") == 0) {
+                            else if(word.compare("Road_Width") == 0) {
                                 token >> word;
                                 token >> word;
                                 wd = stoi(word);
@@ -110,7 +115,7 @@ int main(int argc, char const *argv[]) {
                                 sig = stoi(word);
                             }
                             else {
-                                cout<<"Incomplete Parameters for Road "<<id<<"\n";
+                                cout<<"Incorrect Parameters for Road "<<id<<"\n";
                             }
                         }
                         else {
@@ -123,18 +128,18 @@ int main(int argc, char const *argv[]) {
                 }
 
                 // Processing default parameters
-                else if(word.compare("Default_MaxSpeed")) {
+                else if(word.compare("Default_MaxSpeed") == 0) {
                     token >> word;
                     token >> word;
                     default_max_speed = stoi(word);
                 }
-                else if(word.compare("Default_Acceleration")) {
+                else if(word.compare("Default_Acceleration") == 0) {
                     token >> word;
                     token >> word;
                     default_acceleration = stoi(word);
                 }
 
-                // Prcessing a new vehicle
+                // Processing a new vehicle
                 else if(word.compare("Vehicle_Type") == 0) {
                     token >>  word;
                     token >> word;
@@ -145,7 +150,7 @@ int main(int argc, char const *argv[]) {
 
                     for(int i=0; i<4; i++){
                         if( getline(file,line) ){
-
+                            
                             istringstream token(line);
                             if(line.size()==0) {
                                 param[2] = default_max_speed;
@@ -161,7 +166,7 @@ int main(int argc, char const *argv[]) {
                                 token >> word;
                                 param[0] = stoi(word);
                             }
-                            else if(word.compare("Vehicle_width") == 0) {
+                            else if(word.compare("Vehicle_Width") == 0) {
                                 token >> word;
                                 token >> word;
                                 param[1] = stoi(word);
@@ -177,7 +182,7 @@ int main(int argc, char const *argv[]) {
                                 param[3] = stoi(word);
                             }
                             else {
-                                cout<<"Incomplete Parameters for Vehicle Type "<<vtype<<"\n";
+                                cout<<"Incorrect Parameters for Vehicle Type "<<vtype<<"\n";
                             }
                         }
                         else {
@@ -188,24 +193,19 @@ int main(int argc, char const *argv[]) {
                     vehicle_types.insert(pair<string, Vehicle>(vtype, Vehicle(param, symbol)));
                     break;
                 }
-                else if(word.compare("START")){
+                else if(word.compare("START") == 0){
                     pass_time(roads.back());
                 }
-                else if(word.compare("PASS")){
+                
+                else if(word.compare("Pass") == 0){
                     token >> word;
                     int tt = stoi(word);
                     Road r = roads.back();
                     while(tt--)
                         pass_time(r);
                 }
-                else if(vehicle_types.count(word)) {
-                    token >> word; // Color of the vehicle
-                    // Now adding the vehicle in the road
-                    Vehicle temp = vehicle_types.find(word)->second;
-                    temp.set_color(word);
-                    add_v(roads.back(), temp);
-                }
-                else if(word.compare("Signal")) {
+
+                else if(word.compare("Signal") == 0) {
                     token >> word;
                     Road r = roads.back();
                     r.set_signal(word);
@@ -219,7 +219,7 @@ int main(int argc, char const *argv[]) {
                         cout<< "Undefined Signal"<<"\n";
                     }
                 }
-                else if (word.compare("END")) {
+                else if (word.compare("END") == 0) {
                     Road r = roads.back();
                     if(r.get_signal() == "RED")
                         break;
@@ -228,13 +228,28 @@ int main(int argc, char const *argv[]) {
                             pass_time(r);
                     }
                 }
+
+                else if(vehicle_types.count(word)) {
+                    token >> word; // Color of the vehicle
+                    // Now adding the vehicle in the road
+                    Vehicle temp = vehicle_types.find(word)->second;
+                    vector<int> param;
+                    param[0] = temp.length();
+                    param[1] = temp.width();
+                    param[2] = temp.max_speed();
+                    param[3] = temp.acc();
+                    
+                    Vehicle temp2 = Vehicle(param, temp.sym());
+                    temp2.set_color(word);
+                    add_v(roads.back(), temp2);
+                }
                 else {
                     cout << "Undefined Control- "<<word <<"\n";
                 }
             }
         }
-    // }
-    // else {
-        // cout<<"Unable to open File- "<<filename<<"\n";
-    // }
+    }
+    else {
+        cout<<"Unable to open File- "<<filename<<"\n";
+    }
 }
