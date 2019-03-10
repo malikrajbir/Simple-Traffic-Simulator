@@ -36,19 +36,21 @@ enum mv {front, lt, rt};
 // Adding and setting a vehicle's key position (** COMES AFTER PROCESS IN THE SAME TIME)
 void add_vehicle(Vehicle& v, Road& r) {
     // Vehicles is set and key position must still be set
+    vector<int> possible{};
     bool good, set = false;
-    for(int i=0; i<r.heigth(); i++) {
+    for(int i=0; i<r.heigth()-v.width()+1; i++) {
         good = true;
         for(int j=0; j<v.width(); j++)
             good = (good)&&(r.marks()[0][i+j] == " ");
         if(good) {
-            v.update_pos(pair<int, int>(0, i));
             set = true;
-            break;
+            possible.push_back(i);
         }
     }
     if(!set)
         throw runtime_error("Not possible for vehicle to enter");
+    int rand_pos = possible[random()%possible.size()];
+    v.update_pos(pair<int, int>(0, rand_pos));
     r.current_vcls().push_back(v);
     for(int i=0; i<v.width(); i++)
         r.marks()[0][i+v.pos().second] = v.sym();
@@ -90,7 +92,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
     }
     else {
         int x = v.pos().first;
-        int y = v.pos().second-v.width();
+        int y = v.pos().second-1;
         // Exiting if stopped because of red light
         if(r.marks()[x+1][0] == "\033[1;31m|\033[0m" || r.marks()[x+1][0] == "\033[1;31mX\033[0m")
             return false;
