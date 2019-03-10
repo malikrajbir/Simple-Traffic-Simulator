@@ -26,42 +26,10 @@ void add_v(Road& r, Vehicle v) {
 }
 
 int main(int argc, char const *argv[]) {
-    // Setting the road
-    // Road r = Road(1,30, 8, 15);
-    // // Setting the vehicles
-    // Vehicle car1 = Vehicle({2, 2, 3, 1}, 'c');
-    // Vehicle car2 = Vehicle({2, 2, 1, 1}, 'c');
-    // Vehicle bike = Vehicle({2, 1, 2, 1}, 'b');
-    // Vehicle Bus = Vehicle({3, 2, 1, 1}, 'B');
-    // Vehicle Truck = Vehicle({4, 2, 3, 1}, 'T');
-    //
-    // add_v(r, bike);
-    // add_v(r, Bus);
-    // add_v(r, car1);
-    // add_v(r, bike);
-    // add_v(r, Bus);
-    // for(int i=0; i<10; i++)
-    //     pass_time(r);
-    // r.signal_red();
-    // add_v(r, Truck);
-    // add_v(r, car1);
-    // add_v(r, bike);
-    // add_v(r, Bus);
-    // for(int i=0; i<10; i++)
-    //     pass_time(r);
-    // r.signal_green();
-    // add_v(r, bike);
-    // add_v(r, Bus);
-    // add_v(r, Truck);
-    // add_v(r, car2);
-    // while(r.current_vcls().size() != 0)
-    //     pass_time(r);
-    // return 0;
-
     int default_max_speed = 0;
     int default_acceleration = 0;
-    vector<Road> roads;
     map<string, Vehicle> vehicle_types;
+    Road r;
 
     string filename = "config.ini";
     ifstream file;
@@ -123,7 +91,7 @@ int main(int argc, char const *argv[]) {
                         }
                     }
 
-                    roads.push_back(Road(id,ln,wd,sig));
+                    r = Road(id,ln,wd,sig);
                     break;
                 }
 
@@ -194,19 +162,18 @@ int main(int argc, char const *argv[]) {
                     break;
                 }
                 else if(word.compare("START") == 0){
+                    // Nothing to do
                 }
 
                 else if(word.compare("Pass") == 0){
                     token >> word;
                     int tt = stoi(word);
-                    Road r = roads.back();
                     while(tt--)
                         pass_time(r);
                 }
 
                 else if(word.compare("Signal") == 0) {
                     token >> word;
-                    Road r = roads.back();
                     r.set_signal(word);
                     cout << "SIGNAL -> " << word;
                     if(word.compare("RED") == 0) {
@@ -220,7 +187,6 @@ int main(int argc, char const *argv[]) {
                     }
                 }
                 else if (word.compare("END") == 0) {
-                    Road r = roads.back();
                     if(r.get_signal() == "RED")
                         break;
                     else if(r.get_signal() == "GREEN") {
@@ -236,7 +202,7 @@ int main(int argc, char const *argv[]) {
                     vector<int> param{temp.length(), temp.width(), temp.max_speed(), temp.acc()};
                     Vehicle temp2 = Vehicle(param, temp.sym());
                     temp2.set_color(word);
-                    add_v(roads.back(), temp2);
+                    add_v(r, temp2);
                 }
                 else {
                     cout << "Undefined Control- "<<word <<"\n";
