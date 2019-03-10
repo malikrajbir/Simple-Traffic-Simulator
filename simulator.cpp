@@ -31,17 +31,25 @@ int main(int argc, char const *argv[]) {
     Vehicle car2 = Vehicle({2, 2, 1, 1}, 'c');
     Vehicle bike = Vehicle({2, 1, 2, 1}, 'b');
     Vehicle Bus = Vehicle({3, 2, 1, 1}, 'B');
-    Vehicle Truck = Vehicle({4, 2, 2, 1}, 'T');
+    Vehicle Truck = Vehicle({4, 2, 3, 1}, 'T');
 
+    add_v(r, bike);
+    add_v(r, Bus);
     add_v(r, car1);
     add_v(r, bike);
     add_v(r, Bus);
     for(int i=0; i<10; i++)
         pass_time(r);
     r.signal_red();
+    add_v(r, Truck);
+    add_v(r, car1);
+    add_v(r, bike);
+    add_v(r, Bus);
     for(int i=0; i<10; i++)
         pass_time(r);
     r.signal_green();
+    add_v(r, bike);
+    add_v(r, Bus);
     add_v(r, Truck);
     add_v(r, car2);
     while(r.current_vcls().size() != 0)

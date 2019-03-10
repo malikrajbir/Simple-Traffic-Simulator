@@ -86,7 +86,7 @@ public:
         for(int i=ln; i>0; --i)
             cout << "--";
         cout << "\n";
-        usleep(500*1000);
+        usleep(250*1000);
     }
 
     // Turn signal to red

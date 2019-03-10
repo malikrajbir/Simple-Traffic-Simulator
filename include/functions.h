@@ -28,6 +28,9 @@ using namespace std;
 
 #ifndef FN
 #define FN
+
+enum mv {front, lt, rt};
+
 // ADD
 
 // Adding and setting a vehicle's key position (** COMES AFTER PROCESS IN THE SAME TIME)
@@ -51,20 +54,59 @@ void add_vehicle(Vehicle& v, Road& r) {
 
 // PROCESS
 // Checking the status of vehicles movement
-bool movable(Vehicle& v, Road& r) {
-    int x = v.pos().first+1;
-    int y = v.pos().second;
-    // If exiting (no other ahead)
-    if(x >= r.length())
+// The 'direction' parameter checks for the direction of movement
+bool movable(Vehicle& v, Road& r, mv direction) {
+    if(direction == front) {
+        int x = v.pos().first+1;
+        int y = v.pos().second;
+        // If exiting (no other ahead)
+        if(x >= r.length())
+            return true;
+        // checking the next complete row
+        for(int j=0; j<v.width(); j++)
+            if(r.marks()[x][y+j] != ' ')
+                return false;
         return true;
-    // checking the next complete row
-    for(int j=0; j<v.width(); j++)
-        if(r.marks()[x][y+j] != ' ')
+    }
+    else if (direction == rt) {
+        int x = v.pos().first;
+        int y = v.pos().second+v.width();
+        // Exiting if stopped because of red light
+        if(r.marks()[x+1][0] == '=')
             return false;
-    return true;
+        // Exiting if vehicle on edge
+        if(y >= r.heigth())
+            return false;
+        // Checking if possible now
+        for(int j=0; j<v.length(); j++) {
+            if(x-j<0)
+                continue;
+            if(r.marks()[x-j][y] != ' ')
+                return false;
+        }
+        return true;
+    }
+    else {
+        int x = v.pos().first;
+        int y = v.pos().second-v.width();
+        // Exiting if stopped because of red light
+        if(r.marks()[x+1][0] == '=')
+            return false;
+        // Exiting if vehicle on edge
+        if(y < 0)
+            return false;
+        // Checking if possible now
+        for(int j=0; j<v.length(); j++) {
+            if(x-j<0)
+                continue;
+            if(r.marks()[x-j][y] != ' ')
+                return false;
+        }
+        return true;
+    }
 }
 // Putting the vehicles in the predicted position
-bool set_vehicle(Vehicle& temp, Road& r) {
+bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
     // Resetting the current space occupied by vehicle
     for(int i=temp.pos().first; i>temp.pos().first-temp.length(); i--) {
         if(i >= r.length() || i < 0)
@@ -72,11 +114,19 @@ bool set_vehicle(Vehicle& temp, Road& r) {
         for(int j=temp.pos().second; j<temp.pos().second+temp.width(); j++)
             r.marks()[i][j] = ' ';
     }
-    // Updating the position
-    temp.update_pos(pair<int, int>(temp.pos().first+1, temp.pos().second));
-    // Removing the vehicle if out
-    if(temp.pos().first >= r.length()+temp.length()) {
-        return false;
+    if(direction == front) {
+        // Updating the position
+        temp.update_pos(pair<int, int>(temp.pos().first+1, temp.pos().second));
+        // Removing the vehicle if out
+        if(temp.pos().first >= r.length()+temp.length()) {
+            return false;
+        }
+    }
+    else if(direction == rt) {
+        temp.update_pos(pair<int, int>(temp.pos().first, temp.pos().second+1));
+    }
+    else {
+        temp.update_pos(pair<int, int>(temp.pos().first, temp.pos().second-1));
     }
     // Continuing and placing the vehicle
     for(int i=temp.pos().first; i>temp.pos().first-temp.length(); i--) {
@@ -99,10 +149,26 @@ void move_vehicles(Road& r) {
         // Working on each step of the vehicle
         for(int i=0; i<temp.speed(); i++)
             // Checking if movable, moving a step ahead if allowed
-            if(movable(temp, r)) {
-                if(!set_vehicle(temp, r)) {
+            if(movable(temp, r, front)) {
+                if(!set_vehicle(temp, r, front)) {
                     r.current_vcls().erase(it);
                     it--;
+                    break;
+                }
+            }
+            // If movable in downward (right w.r.t. vehicle) direction, do once (eventual overtake)
+            else if(movable(temp, r, rt)) {
+                set_vehicle(temp, r, rt);
+                if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
+                    temp.update_speed(i+1);
+                    break;
+                }
+            }
+            // If movable in downward (right w.r.t. vehicle) direction, do once (eventual overtake)
+            else if(movable(temp, r, lt)) {
+                set_vehicle(temp, r, lt);
+                if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
+                    temp.update_speed(i+1);
                     break;
                 }
             }
