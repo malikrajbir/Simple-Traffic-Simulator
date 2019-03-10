@@ -40,7 +40,7 @@ public:
         ht = height;
         sig = signal;
         t = 0;
-        positions = vector<vector<char>>(ln, vector<char>(ht, ':'));
+        positions = vector<vector<char>>(ln, vector<char>(ht, ' '));
     }
 
     // Get the length of the road
@@ -98,7 +98,7 @@ public:
     // Turn signal to green
     void signal_green() {
         for(int i=0; i<ht; i++)
-            positions[sig][i] = ':';
+            positions[sig][i] = ' ';
     }
 
     // Increasing time

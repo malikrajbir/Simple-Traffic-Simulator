@@ -37,7 +37,7 @@ void add_vehicle(Vehicle& v, Road& r) {
     for(int i=0; i<r.heigth(); i++) {
         good = true;
         for(int j=0; j<v.width(); j++)
-            good = (good)&&(r.marks()[0][i+j] == ':');
+            good = (good)&&(r.marks()[0][i+j] == ' ');
         if(good) {
             v.update_pos(pair<int, int>(0, i));
             set = true;
@@ -59,7 +59,7 @@ bool movable(Vehicle& v, Road& r) {
         return true;
     // checking the next complete row
     for(int j=0; j<v.width(); j++)
-        if(r.marks()[x][y+j] != ':')
+        if(r.marks()[x][y+j] != ' ')
             return false;
     return true;
 }
@@ -70,7 +70,7 @@ bool set_vehicle(Vehicle& temp, Road& r) {
         if(i >= r.length() || i < 0)
             continue;
         for(int j=temp.pos().second; j<temp.pos().second+temp.width(); j++)
-            r.marks()[i][j] = ':';
+            r.marks()[i][j] = ' ';
     }
     // Updating the position
     temp.update_pos(pair<int, int>(temp.pos().first+1, temp.pos().second));
@@ -100,8 +100,10 @@ void move_vehicles(Road& r) {
         for(int i=0; i<temp.speed(); i++)
             // Checking if movable, moving a step ahead if allowed
             if(movable(temp, r)) {
-                if(!set_vehicle(temp, r))
+                if(!set_vehicle(temp, r)) {
                     r.current_vcls().erase(it);
+                    break;
+                }
             }
             // If not, stopping and setting the current movement as speed
             else {
