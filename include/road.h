@@ -20,10 +20,11 @@ class Road {
 private:
 
     // Road Parameters
+    int uid;    //Unique ID
     int ln, ht; // Length and Height
     int t;      // Time
     int sig;   // Signal positions (X-coordinate)
-
+    string signal = "GREEN"; //Signal Color
     // Auto initialisation
     vector<Vehicle> vcls;   // Vector of vehicles
     vector<vector<char>> positions;  // Positions taken by other vehicles on map
@@ -35,12 +36,17 @@ public:
         - Takes the parameters and designs the road
         - Sets time to 0
     */
-    Road(int length, int height, int signal) {
+    Road(int id, int length, int height, int signal) {
+        uid = id;
         ln = length;
         ht = height;
         sig = signal;
         t = 0;
         positions = vector<vector<char>>(ln, vector<char>(ht, ' '));
+    }
+    
+    Road() {
+        //Default Constructor
     }
 
     // Get the length of the road
@@ -58,6 +64,15 @@ public:
         return t;
     }
 
+    //Current signal of road
+    string get_signal(){
+        return signal;
+    }
+
+    //Change Signal
+    void set_signal(string s) {
+        signal = s;
+    }
     // Get the list of vehicles on road
     vector<Vehicle>& current_vcls() {
         return vcls;
