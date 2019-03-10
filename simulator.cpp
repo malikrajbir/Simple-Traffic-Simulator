@@ -19,7 +19,7 @@ void pass_time(Road& r, ofstream& out) {
     move_vehicles(r);
     r.inc_time();
     r.show_road();
-    r.show_road(out);
+    r.wrt_road(out);
 }
 
 // Same as above but with vehicles add in place.
@@ -28,7 +28,7 @@ void add_v(Road& r, Vehicle v, ofstream& out) {
     add_vehicle(v, r);
     r.inc_time();
     r.show_road();
-    r.show_road(out);
+    r.wrt_road(out);
 }
 
 // Function, defining the FSM for processing the 'Configuration file'
@@ -131,7 +131,7 @@ void process(ifstream& file, ofstream& out) {
 
                 // Designating symbol and name to the type
                 token >> word;
-                char symbol = word.at(0);
+                string symbol = string(1, word.at(0));
                 string vtype = word;
 
                 vector<int> param{0, 0, -1, -1};    // Default parameters list
@@ -245,6 +245,7 @@ void process(ifstream& file, ofstream& out) {
                 // Setting the color
                 token >> word;
                 temp.set_color(word);
+                temp.color_sym(word);
                 // Adding vehicles
                 add_v(r, temp, out);
             }

@@ -27,10 +27,25 @@ private:
     pair<int, int> key;
 
     // Representing symbol for the vehicle
-    char symbol;
+    string symbol;
 
     // History, keeping check of the last move
     lmv last;
+
+    // Getting the desired head for color
+    string get_color(string clr) {
+        if(clr == "BLUE")
+            return "\033[1;34m";
+        else if(clr == "GREEN")
+            return "\033[1;32m";
+        else if(clr == "RED")
+            return "\033[1;31m";
+        else if(clr == "YELLOW")
+            return "\033[1;33m";
+        return "";
+    }
+    // Default string for normalisation
+    string norm = "\033[0m";
 
 public:
 
@@ -39,7 +54,7 @@ public:
         -  Parameter Vector (param) contains all the required information for the vehicle
         -  The character 's' represents the designated symbol for the vehicle
     */
-    Vehicle(vector<int> param, char s) {
+    Vehicle(vector<int> param, string s) {
         ln = param[0];
         wd = param[1];
         msp = param[2];
@@ -50,8 +65,15 @@ public:
     }
 
     // Symbol for the vehicle
-    char sym() {
+    string sym() {
         return symbol;
+    }
+    // Give color to the symbol
+    void color_sym(string color) {
+        string c = get_color(color);
+        if(c == "")
+            return;
+        symbol = c+symbol+norm;
     }
 
     // Get the length of the vehicle

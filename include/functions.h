@@ -40,7 +40,7 @@ void add_vehicle(Vehicle& v, Road& r) {
     for(int i=0; i<r.heigth(); i++) {
         good = true;
         for(int j=0; j<v.width(); j++)
-            good = (good)&&(r.marks()[0][i+j] == ' ');
+            good = (good)&&(r.marks()[0][i+j] == " ");
         if(good) {
             v.update_pos(pair<int, int>(0, i));
             set = true;
@@ -66,7 +66,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
             return true;
         // checking the next complete row
         for(int j=0; j<v.width(); j++)
-            if(r.marks()[x][y+j] != ' ')
+            if(r.marks()[x][y+j] != " ")
                 return false;
         return true;
     }
@@ -74,7 +74,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         int x = v.pos().first;
         int y = v.pos().second+v.width();
         // Exiting if stopped because of red light
-        if(r.marks()[x+1][0] == '|')
+        if(r.marks()[x+1][0] == "|")
             return false;
         // Exiting if vehicle on edge
         if(y >= r.heigth())
@@ -83,7 +83,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         for(int j=0; j<v.length(); j++) {
             if(x-j<0)
                 continue;
-            if(r.marks()[x-j][y] != ' ')
+            if(r.marks()[x-j][y] != " ")
                 return false;
         }
         return true;
@@ -92,7 +92,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         int x = v.pos().first;
         int y = v.pos().second-v.width();
         // Exiting if stopped because of red light
-        if(r.marks()[x+1][0] == '|')
+        if(r.marks()[x+1][0] == "|")
             return false;
         // Exiting if vehicle on edge
         if(y < 0)
@@ -101,7 +101,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         for(int j=0; j<v.length(); j++) {
             if(x-j<0)
                 continue;
-            if(r.marks()[x-j][y] != ' ')
+            if(r.marks()[x-j][y] != " ")
                 return false;
         }
         return true;
@@ -114,7 +114,7 @@ bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
         if(i >= r.length() || i < 0)
             continue;
         for(int j=temp.pos().second; j<temp.pos().second+temp.width(); j++)
-            r.marks()[i][j] = ' ';
+            r.marks()[i][j] = " ";
     }
     if(direction == front) {
         // Updating the position
