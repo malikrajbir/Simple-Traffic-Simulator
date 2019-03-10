@@ -50,6 +50,8 @@ void add_vehicle(Vehicle& v, Road& r) {
     if(!set)
         throw runtime_error("Not possible for vehicle to enter");
     r.current_vcls().push_back(v);
+    for(int i=0; i<v.width(); i++)
+        r.marks()[0][i+v.pos().second] = v.sym();
 }
 
 // PROCESS
@@ -72,7 +74,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         int x = v.pos().first;
         int y = v.pos().second+v.width();
         // Exiting if stopped because of red light
-        if(r.marks()[x+1][0] == '=')
+        if(r.marks()[x+1][0] == '|')
             return false;
         // Exiting if vehicle on edge
         if(y >= r.heigth())
@@ -90,7 +92,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         int x = v.pos().first;
         int y = v.pos().second-v.width();
         // Exiting if stopped because of red light
-        if(r.marks()[x+1][0] == '=')
+        if(r.marks()[x+1][0] == '|')
             return false;
         // Exiting if vehicle on edge
         if(y < 0)
@@ -118,7 +120,7 @@ bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
         // Updating the position
         temp.update_pos(pair<int, int>(temp.pos().first+1, temp.pos().second));
         // Removing the vehicle if out
-        if(temp.pos().first >= r.length()+temp.length()) {
+        if(temp.pos().first+1 >= r.length()+temp.length()) {
             return false;
         }
     }
@@ -150,6 +152,7 @@ void move_vehicles(Road& r) {
         for(int i=0; i<temp.speed(); i++)
             // Checking if movable, moving a step ahead if allowed
             if(movable(temp, r, front)) {
+                temp.update_move(lmv::f);
                 if(!set_vehicle(temp, r, front)) {
                     r.current_vcls().erase(it);
                     it--;
@@ -157,7 +160,8 @@ void move_vehicles(Road& r) {
                 }
             }
             // If movable in downward (right w.r.t. vehicle) direction, do once (eventual overtake)
-            else if(movable(temp, r, rt)) {
+            else if(movable(temp, r, rt) && (temp.last_move() != lmv::l)) {
+                temp.update_move(lmv::r);
                 set_vehicle(temp, r, rt);
                 if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
                     temp.update_speed(i+1);
@@ -165,7 +169,8 @@ void move_vehicles(Road& r) {
                 }
             }
             // If movable in downward (right w.r.t. vehicle) direction, do once (eventual overtake)
-            else if(movable(temp, r, lt)) {
+            else if(movable(temp, r, lt) && (temp.last_move() != lmv::r)) {
+                temp.update_move(lmv::l);
                 set_vehicle(temp, r, lt);
                 if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
                     temp.update_speed(i+1);

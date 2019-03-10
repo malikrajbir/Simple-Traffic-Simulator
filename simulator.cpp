@@ -11,31 +11,45 @@
 using namespace std;
 
 // NOT PREPARED CURRENTLY ONLY FOR TESTING
+ofstream out_file;
 
-void pass_time(Road& r) {
+// Increasing the time counter by 1s
+// Making appropriate changes for that 1s (moving, printing...)
+void pass_time(Road& r, ofstream& out) {
     move_vehicles(r);
     r.inc_time();
     r.show_road();
+    r.show_road(out);
 }
 
-void add_v(Road& r, Vehicle v) {
+// Same as above but with vehicles add in place.
+void add_v(Road& r, Vehicle v, ofstream& out) {
     move_vehicles(r);
     add_vehicle(v, r);
     r.inc_time();
     r.show_road();
+    r.show_road(out);
 }
 
+// The main function
 int main(int argc, char const *argv[]) {
+    // Default parameters, defined in stage 2
     int default_max_speed = 0;
     int default_acceleration = 0;
+    // Vehicle categories, defined in stage 3
     map<string, Vehicle> vehicle_types;
+    // The main road(platform), defined in stage 1
     Road r;
 
+    // Taking the file input, for processing
     string filename = "config.ini";
-    ifstream file;
-    file.open(filename);
+    ifstream file(filename);
     string line;
 
+    // Output stream for
+    ofstream out("out.txt");
+
+    // Processing further if the file is in place
     if(file.is_open()) {
         while( getline(file,line) ) {
             // Comment or free line
@@ -43,8 +57,6 @@ int main(int argc, char const *argv[]) {
                 continue;
             if(line.at(0)=='#')
                 continue;
-
-            cout<<line<<endl;
 
             istringstream token(line);  // The tokeniser
             string word;    // The latest token
@@ -169,13 +181,12 @@ int main(int argc, char const *argv[]) {
                     token >> word;
                     int tt = stoi(word);
                     while(tt--)
-                        pass_time(r);
+                        pass_time(r, out);
                 }
 
                 else if(word.compare("Signal") == 0) {
                     token >> word;
                     r.set_signal(word);
-                    cout << "SIGNAL -> " << word;
                     if(word.compare("RED") == 0) {
                         r.signal_red();
                     }
@@ -191,18 +202,15 @@ int main(int argc, char const *argv[]) {
                         break;
                     else if(r.get_signal() == "GREEN") {
                         while(r.current_vcls().size() != 0)
-                            pass_time(r);
+                            pass_time(r, out);
                     }
                 }
 
                 else if(vehicle_types.count(word)) {
-                    Vehicle temp = (*vehicle_types.find(word)).second;
-                    token >> word; // Color of the vehicle
-                    // Now adding the vehicle in the road
-                    vector<int> param{temp.length(), temp.width(), temp.max_speed(), temp.acc()};
-                    Vehicle temp2 = Vehicle(param, temp.sym());
-                    temp2.set_color(word);
-                    add_v(r, temp2);
+                    Vehicle temp = vehicle_types.find(word)->second;
+                    token >> word;
+                    temp.set_color(word);
+                    add_v(r, temp, out);
                 }
                 else {
                     cout << "Undefined Control- "<<word <<"\n";

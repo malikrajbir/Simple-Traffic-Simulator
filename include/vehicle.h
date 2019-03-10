@@ -9,6 +9,9 @@ using namespace std;
 #ifndef VHC
 #define VHC
 
+// Enumeration history for movement
+enum lmv {f, l, r, not_set};
+
 class Vehicle {
 
 private:
@@ -26,6 +29,9 @@ private:
     // Representing symbol for the vehicle
     char symbol;
 
+    // History, keeping check of the last move
+    lmv last;
+
 public:
 
     /*
@@ -40,6 +46,7 @@ public:
         sp = msp;
         ac = param[3];
         symbol = s;
+        last = not_set;
     }
 
     // Symbol for the vehicle
@@ -89,6 +96,16 @@ public:
     // Setting the color of the vehicle for Visual
     void set_color(string clr) {
         color = clr;
+    }
+
+    // REGARGING HISTORY
+    // Returing last move
+    lmv last_move() {
+        return last;
+    }
+    // Updating last move
+    void update_move(lmv nmv) {
+        last = nmv;
     }
 };
 

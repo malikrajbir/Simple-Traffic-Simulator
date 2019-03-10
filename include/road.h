@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ostream>
 
 // Collections
 #include <vector>
@@ -44,7 +45,7 @@ public:
         t = 0;
         positions = vector<vector<char>>(ln, vector<char>(ht, ' '));
     }
-    
+
     Road() {
         //Default Constructor
     }
@@ -84,30 +85,30 @@ public:
     }
 
     // Visualising the road on the terminal
-    void show_road() {
-        // cout << "\033[H\033[J";
-        cout << "Time: " << t << "\n";
+    void show_road(ostream& out = cout) {
+        cout << "\033[H\033[J";
+        out << "Time: " << t << "\n";
         //-------- Line
         for(int i=ln; i>0; --i)
-            cout << "--";
-        cout << "\n";
+            out << "--";
+        out << "\n";
         // Main road
         for(int i=0; i<ht; i++) {
             for(int j=0; j<ln; j++)
-                cout << positions[j][i] << " ";
-            cout << "\n";
+                out << positions[j][i] << " ";
+            out << "\n";
         }
         //-------- Line
         for(int i=ln; i>0; --i)
-            cout << "--";
-        cout << "\n";
+            out << "--";
+        out << "\n";
         usleep(250*1000);
     }
 
     // Turn signal to red
     void signal_red() {
         for(int i=0; i<ht; i++)
-            positions[sig][i] = '=';
+            positions[sig][i] = '|';
     }
 
     // Turn signal to green
