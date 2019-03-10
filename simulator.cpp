@@ -75,12 +75,12 @@ int main(int argc, char const *argv[]) {
                 continue;
             if(line.at(0)=='#')
                 continue;
-            
+
             cout<<line<<endl;
-            
+
             istringstream token(line);  // The tokeniser
             string word;    // The latest token
-            
+
             // Processing the line
             while(token >> word) {
                 // Comment start in a line
@@ -150,7 +150,7 @@ int main(int argc, char const *argv[]) {
 
                     for(int i=0; i<4; i++){
                         if( getline(file,line) ){
-                            
+
                             istringstream token(line);
                             if(line.size()==0) {
                                 param[2] = default_max_speed;
@@ -194,9 +194,8 @@ int main(int argc, char const *argv[]) {
                     break;
                 }
                 else if(word.compare("START") == 0){
-                    pass_time(roads.back());
                 }
-                
+
                 else if(word.compare("Pass") == 0){
                     token >> word;
                     int tt = stoi(word);
@@ -209,6 +208,7 @@ int main(int argc, char const *argv[]) {
                     token >> word;
                     Road r = roads.back();
                     r.set_signal(word);
+                    cout << "SIGNAL -> " << word;
                     if(word.compare("RED") == 0) {
                         r.signal_red();
                     }
@@ -230,15 +230,10 @@ int main(int argc, char const *argv[]) {
                 }
 
                 else if(vehicle_types.count(word)) {
+                    Vehicle temp = (*vehicle_types.find(word)).second;
                     token >> word; // Color of the vehicle
                     // Now adding the vehicle in the road
-                    Vehicle temp = vehicle_types.find(word)->second;
-                    vector<int> param;
-                    param[0] = temp.length();
-                    param[1] = temp.width();
-                    param[2] = temp.max_speed();
-                    param[3] = temp.acc();
-                    
+                    vector<int> param{temp.length(), temp.width(), temp.max_speed(), temp.acc()};
                     Vehicle temp2 = Vehicle(param, temp.sym());
                     temp2.set_color(word);
                     add_v(roads.back(), temp2);
