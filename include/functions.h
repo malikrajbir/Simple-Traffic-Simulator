@@ -75,7 +75,7 @@ bool set_vehicle(Vehicle& temp, Road& r) {
     // Updating the position
     temp.update_pos(pair<int, int>(temp.pos().first+1, temp.pos().second));
     // Removing the vehicle if out
-    if(temp.pos().first >= r.length()-temp.length()) {
+    if(temp.pos().first >= r.length()+temp.length()) {
         return false;
     }
     // Continuing and placing the vehicle

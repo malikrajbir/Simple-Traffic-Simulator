@@ -16,7 +16,7 @@ private:
     // Parameters
     int ln, wd; // Length and Width
     int sp, ac; // Speed and Acceleration (current)
-    int msp; // Speed and Acceleration (maximum)
+    int msp; // Speed (maximum)
 
     // Key coordinate (right and top-most)
     pair<int, int> key;

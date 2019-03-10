@@ -22,7 +22,7 @@ private:
     // Road Parameters
     int ln, ht; // Length and Height
     int t;      // Time
-    int sig;   // Signal positions
+    int sig;   // Signal positions (X-coordinate)
 
     // Auto initialisation
     vector<Vehicle> vcls;   // Vector of vehicles
