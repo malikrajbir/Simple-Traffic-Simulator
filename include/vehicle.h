@@ -17,7 +17,6 @@ private:
     int ln, wd; // Length and Width
     int sp, ac; // Speed and Acceleration (current)
     int msp; // Speed (maximum)
-    string vtype; //Vehicle Type
 
     // Key coordinate (right and top-most)
     pair<int, int> key;
@@ -32,19 +31,13 @@ public:
         -  Parameter Vector (param) contains all the required information for the vehicle
         -  The character 's' represents the designated symbol for the vehicle
     */
-    Vehicle(vector<int> param, char s, string type) {
+    Vehicle(vector<int> param, char s) {
         ln = param[0];
         wd = param[1];
         msp = param[2];
         sp = msp;
         ac = param[3];
         symbol = s;
-        vtype = type;
-    }
-
-    //Type of the Vehicle
-    string type(){
-        return vtype;
     }
 
     // Symbol for the vehicle

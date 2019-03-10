@@ -29,11 +29,11 @@ int main(int argc, char const *argv[]) {
     // Setting the road
     Road r = Road(1,30, 8, 15);
     // Setting the vehicles
-    Vehicle car1 = Vehicle({2, 2, 3, 1}, 'c', "Car");
-    Vehicle car2 = Vehicle({2, 2, 1, 1}, 'c', "Car");
-    Vehicle bike = Vehicle({2, 1, 2, 1}, 'b', "bike");
-    Vehicle Bus = Vehicle({3, 2, 1, 1}, 'B', "Bus");
-    Vehicle Truck = Vehicle({4, 2, 3, 1}, 'T', "Truck");
+    Vehicle car1 = Vehicle({2, 2, 3, 1}, 'c');
+    Vehicle car2 = Vehicle({2, 2, 1, 1}, 'c');
+    Vehicle bike = Vehicle({2, 1, 2, 1}, 'b');
+    Vehicle Bus = Vehicle({3, 2, 1, 1}, 'B');
+    Vehicle Truck = Vehicle({4, 2, 3, 1}, 'T');
 
     add_v(r, bike);
     add_v(r, Bus);
@@ -61,7 +61,7 @@ int main(int argc, char const *argv[]) {
     int default_max_speed = 0;
     int default_acceleration = 0;
     vector<Road> roads;
-    vector<Vehicle> vehicle_types;
+    map<string, Vehicle> vehicle_types;
 
     string filename = "config.ini";
     ifstream file;
@@ -70,15 +70,17 @@ int main(int argc, char const *argv[]) {
 
     if(file.is_open()) {
         while( getline(file,line) ) {
+            // Comment or free line
             if(line.at(0) == '#' || line.length() == 0)
                 continue;
-            
-            istringstream token(line);
-            string word;
+
+            istringstream token(line);  // The tokeniser
+            string word;    // The latest token
+
             while(token >> word) {
                 if(word.at(0)=='#')
                     break;
-                
+
                 if(word.compare("Road_Id") == 0) {
                     token >> word;
                     token >> word;
@@ -118,6 +120,17 @@ int main(int argc, char const *argv[]) {
                     break;
                 }
 
+                else if(word.compare("Default_MaxSpeed")) {
+                    token >> word;
+                    token >> word;
+                    default_max_speed = stoi(word);
+                }
+                else if(word.compare("Default_Acceleration")) {
+                    token >> word;
+                    token >> word;
+                    default_acceleration = stoi(word);
+                }
+
                 else if(word.compare("Vehicle_Type") == 0) {
                     token >>  word;
                     token >> word;
@@ -128,14 +141,14 @@ int main(int argc, char const *argv[]) {
 
                     for(int i=0; i<4; i++){
                         if( getline(file,line) ){
-                            
+
                             istringstream token(line);
                             if(line.size()==0) {
                                 param[2] = default_max_speed;
                                 param[3] = default_acceleration;
                                 break;
                             }
-                            
+
                             string word;
                             token >> word;
 
@@ -168,33 +181,18 @@ int main(int argc, char const *argv[]) {
                         }
                     }
 
-                    vehicle_types.push_back(Vehicle(param, symbol, vtype));
+                    vehicle_types.insert(pair<string, Vehicle>(vtype, Vehicle(param, symbol)));
                     break;
                 }
-                else if(word.compare("Default_MaxSpeed")) {
-                    token >> word;
-                    token >> word;
-                    default_max_speed = stoi(word);
-                }
-                else if(word.compare("Default_Acceleration")) {
-                    token >> word;
-                    token >> word;
-                    default_acceleration = stoi(word);
-                }
                 else if(word.compare("START")){
-                    
-                } 
-                else if(word.compare("Car")) {
-                    token >> word;
-                }
-                else if(word.compare("bike")) {
 
                 }
-                else if(word.compare("Truck")) {
+                else if(word.compare("PASS")){
 
                 }
-                else if(word.compare("Bus")) {
-
+                else if(vehicle_types.count(word)) {
+                    token >> word; // Color of the vehicle
+                    // Further processing of the vehicle
                 }
                 else if(word.compare("Signal")) {
                     token >> word;
@@ -204,7 +202,7 @@ int main(int argc, char const *argv[]) {
                         r.signal_red();
                     }
                     else if(word.compare("GREEN") == 0) {
-                        r.signal_green(); 
+                        r.signal_green();
                     }
                     else {
                         cout<< "Undefined Signal"<<"\n";
