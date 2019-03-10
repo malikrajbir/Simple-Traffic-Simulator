@@ -4,6 +4,9 @@
 #include <vector>
 #include <map>
 
+// Random numbers
+#include <cstdlib>
+
 using namespace std;
 
 // Road and Vehicle class
@@ -49,7 +52,7 @@ void add_vehicle(Vehicle& v, Road& r) {
     }
     if(!set)
         throw runtime_error("Not possible for vehicle to enter");
-    int rand_pos = possible[random()%possible.size()];
+    int rand_pos = possible[rand()%possible.size()];
     v.update_pos(pair<int, int>(0, rand_pos));
     r.current_vcls().push_back(v);
     for(int i=0; i<v.width(); i++)
