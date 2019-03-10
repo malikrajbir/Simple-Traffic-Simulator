@@ -27,36 +27,36 @@ void add_v(Road& r, Vehicle v) {
 
 int main(int argc, char const *argv[]) {
     // Setting the road
-    Road r = Road(1,30, 8, 15);
-    // Setting the vehicles
-    Vehicle car1 = Vehicle({2, 2, 3, 1}, 'c');
-    Vehicle car2 = Vehicle({2, 2, 1, 1}, 'c');
-    Vehicle bike = Vehicle({2, 1, 2, 1}, 'b');
-    Vehicle Bus = Vehicle({3, 2, 1, 1}, 'B');
-    Vehicle Truck = Vehicle({4, 2, 3, 1}, 'T');
-
-    add_v(r, bike);
-    add_v(r, Bus);
-    add_v(r, car1);
-    add_v(r, bike);
-    add_v(r, Bus);
-    for(int i=0; i<10; i++)
-        pass_time(r);
-    r.signal_red();
-    add_v(r, Truck);
-    add_v(r, car1);
-    add_v(r, bike);
-    add_v(r, Bus);
-    for(int i=0; i<10; i++)
-        pass_time(r);
-    r.signal_green();
-    add_v(r, bike);
-    add_v(r, Bus);
-    add_v(r, Truck);
-    add_v(r, car2);
-    while(r.current_vcls().size() != 0)
-        pass_time(r);
-    return 0;
+    // Road r = Road(1,30, 8, 15);
+    // // Setting the vehicles
+    // Vehicle car1 = Vehicle({2, 2, 3, 1}, 'c');
+    // Vehicle car2 = Vehicle({2, 2, 1, 1}, 'c');
+    // Vehicle bike = Vehicle({2, 1, 2, 1}, 'b');
+    // Vehicle Bus = Vehicle({3, 2, 1, 1}, 'B');
+    // Vehicle Truck = Vehicle({4, 2, 3, 1}, 'T');
+    //
+    // add_v(r, bike);
+    // add_v(r, Bus);
+    // add_v(r, car1);
+    // add_v(r, bike);
+    // add_v(r, Bus);
+    // for(int i=0; i<10; i++)
+    //     pass_time(r);
+    // r.signal_red();
+    // add_v(r, Truck);
+    // add_v(r, car1);
+    // add_v(r, bike);
+    // add_v(r, Bus);
+    // for(int i=0; i<10; i++)
+    //     pass_time(r);
+    // r.signal_green();
+    // add_v(r, bike);
+    // add_v(r, Bus);
+    // add_v(r, Truck);
+    // add_v(r, car2);
+    // while(r.current_vcls().size() != 0)
+    //     pass_time(r);
+    // return 0;
 
     int default_max_speed = 0;
     int default_acceleration = 0;
@@ -64,11 +64,10 @@ int main(int argc, char const *argv[]) {
     map<string, Vehicle> vehicle_types;
 
     string filename = "config.ini";
-    ifstream file;
-    file.open(filename);
+    ifstream file(filename);
     string line;
 
-    if(file.is_open()) {
+    // if(file.is_open()) {
         while( getline(file,line) ) {
             // Comment or free line
             if(line.at(0) == '#' || line.length() == 0)
@@ -77,10 +76,13 @@ int main(int argc, char const *argv[]) {
             istringstream token(line);  // The tokeniser
             string word;    // The latest token
 
+            // Processing the line
             while(token >> word) {
+                // Comment start in a line
                 if(word.at(0)=='#')
                     break;
 
+                // Processing a ROAD
                 if(word.compare("Road_Id") == 0) {
                     token >> word;
                     token >> word;
@@ -120,6 +122,7 @@ int main(int argc, char const *argv[]) {
                     break;
                 }
 
+                // Processing default parameters
                 else if(word.compare("Default_MaxSpeed")) {
                     token >> word;
                     token >> word;
@@ -131,6 +134,7 @@ int main(int argc, char const *argv[]) {
                     default_acceleration = stoi(word);
                 }
 
+                // Prcessing a new vehicle
                 else if(word.compare("Vehicle_Type") == 0) {
                     token >>  word;
                     token >> word;
@@ -185,14 +189,21 @@ int main(int argc, char const *argv[]) {
                     break;
                 }
                 else if(word.compare("START")){
-
+                    pass_time(roads.back());
                 }
                 else if(word.compare("PASS")){
-
+                    token >> word;
+                    int tt = stoi(word);
+                    Road r = roads.back();
+                    while(tt--)
+                        pass_time(r);
                 }
                 else if(vehicle_types.count(word)) {
                     token >> word; // Color of the vehicle
-                    // Further processing of the vehicle
+                    // Now adding the vehicle in the road
+                    Vehicle temp = vehicle_types.find(word)->second;
+                    temp.set_color(word);
+                    add_v(roads.back(), temp);
                 }
                 else if(word.compare("Signal")) {
                     token >> word;
@@ -222,8 +233,8 @@ int main(int argc, char const *argv[]) {
                 }
             }
         }
-    }
-    else {
-        cout<<"Unable to open File- "<<filename<<"\n";
-    }
+    // }
+    // else {
+        // cout<<"Unable to open File- "<<filename<<"\n";
+    // }
 }

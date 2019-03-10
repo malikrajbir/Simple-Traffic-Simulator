@@ -18,6 +18,8 @@ private:
     int sp, ac; // Speed and Acceleration (current)
     int msp; // Speed (maximum)
 
+    string color;
+
     // Key coordinate (right and top-most)
     pair<int, int> key;
 
@@ -82,6 +84,11 @@ public:
     // Set new key position
     void update_pos(pair<int, int> np) {
         key = np;
+    }
+
+    // Setting the color of the vehicle for Visual
+    void set_color(string clr) {
+        color = clr;
     }
 };
 
