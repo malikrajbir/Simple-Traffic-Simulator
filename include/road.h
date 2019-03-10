@@ -130,7 +130,7 @@ public:
     // Turn signal to red
     void signal_red() {
         for(int i=0; i<ht; i++)
-            positions[sig][i] = "|";
+            positions[sig][i] = "\033[1;31m|\033[0m";
     }
 
     // Turn signal to green

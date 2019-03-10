@@ -74,7 +74,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         int x = v.pos().first;
         int y = v.pos().second+v.width();
         // Exiting if stopped because of red light
-        if(r.marks()[x+1][0] == "|")
+        if(r.marks()[x+1][0] == "\033[1;31m|\033[0m" || r.marks()[x+1][0] == "\033[1;31mX\033[0m")
             return false;
         // Exiting if vehicle on edge
         if(y >= r.heigth())
@@ -92,7 +92,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         int x = v.pos().first;
         int y = v.pos().second-v.width();
         // Exiting if stopped because of red light
-        if(r.marks()[x+1][0] == "|")
+        if(r.marks()[x+1][0] == "\033[1;31m|\033[0m" || r.marks()[x+1][0] == "\033[1;31mX\033[0m")
             return false;
         // Exiting if vehicle on edge
         if(y < 0)
@@ -114,7 +114,10 @@ bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
         if(i >= r.length() || i < 0)
             continue;
         for(int j=temp.pos().second; j<temp.pos().second+temp.width(); j++)
-            r.marks()[i][j] = " ";
+            if(r.marks()[i][j] == "\033[1;31mX\033[0m")
+                r.marks()[i][j] = "\033[1;31m|\033[0m";
+            else if(r.marks()[i][j] != "\033[1;31m|\033[0m")
+                r.marks()[i][j] = " ";
     }
     if(direction == front) {
         // Updating the position
@@ -135,7 +138,10 @@ bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
         if(i >= r.length() || i < 0)
             continue;
         for(int j=temp.pos().second; j<temp.pos().second+temp.width(); j++)
-            r.marks()[i][j] = temp.sym();
+            if(r.marks()[i][j] != "\033[1;31m|\033[0m")
+                r.marks()[i][j] = temp.sym();
+            else
+                r.marks()[i][j] = "\033[1;31mX\033[0m";
     }
     return true;
 }
@@ -152,7 +158,7 @@ void move_vehicles(Road& r) {
         for(int i=0; i<temp.speed(); i++)
             // Checking if movable, moving a step ahead if allowed
             if(movable(temp, r, front)) {
-                temp.update_move(lmv::f);
+                // temp.update_move(lmv::f); // NOT NEEDED
                 if(!set_vehicle(temp, r, front)) {
                     r.current_vcls().erase(it);
                     it--;
