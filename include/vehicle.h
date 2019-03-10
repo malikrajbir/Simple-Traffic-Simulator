@@ -35,13 +35,13 @@ private:
     // Getting the desired head for color
     string get_color(string clr) {
         if(clr == "BLUE")
-            return "\033[1;34m";
+            return "\033[1;34;100m";
         else if(clr == "GREEN")
-            return "\033[1;32m";
+            return "\033[1;32;100m";
         else if(clr == "RED")
-            return "\033[1;31m";
+            return "\033[1;31;100m";
         else if(clr == "YELLOW")
-            return "\033[1;33m";
+            return "\033[1;33;100m";
         return "";
     }
     // Default string for normalisation

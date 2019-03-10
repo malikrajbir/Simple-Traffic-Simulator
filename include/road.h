@@ -43,7 +43,7 @@ public:
         ht = height;
         sig = signal;
         t = 0;
-        positions = vector<vector<string>>(ln, vector<string>(ht, " "));
+        positions = vector<vector<string>>(ln, vector<string>(ht, "\033[1;100m \033[0m"));
     }
 
     Road() {
@@ -95,7 +95,7 @@ public:
         // Main road
         for(int i=0; i<ht; i++) {
             for(int j=0; j<ln; j++)
-                cout << positions[j][i] << " ";
+                cout << positions[j][i] << "\033[1;100m \033[0m";
             cout << "\n";
         }
         //-------- Line
@@ -115,8 +115,10 @@ public:
         // Main road
         for(int i=0; i<ht; i++) {
             for(int j=0; j<ln; j++)
-                if(positions[j][i].length() > 7)
-                    out << positions[j][i].at(7) << " ";
+                if(positions[j][i].length() == 13)
+                    out << positions[j][i].at(8) << " ";
+                else if(positions[j][i].length() == 16)
+                    out << positions[j][i].at(11) << " ";
                 else
                     out << positions[j][i] << " ";
             out << "\n";
@@ -130,13 +132,13 @@ public:
     // Turn signal to red
     void signal_red() {
         for(int i=0; i<ht; i++)
-            positions[sig][i] = "\033[1;31m|\033[0m";
+            positions[sig][i] = "\033[1;31;100m|\033[0m";
     }
 
     // Turn signal to green
     void signal_green() {
         for(int i=0; i<ht; i++)
-            positions[sig][i] = " ";
+            positions[sig][i] = "\033[1;100m \033[0m";
     }
 
     // Increasing time

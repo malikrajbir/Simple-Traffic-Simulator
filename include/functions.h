@@ -44,7 +44,7 @@ void add_vehicle(Vehicle& v, Road& r) {
     for(int i=0; i<r.heigth()-v.width()+1; i++) {
         good = true;
         for(int j=0; j<v.width(); j++)
-            good = (good)&&(r.marks()[0][i+j] == " ");
+            good = (good)&&(r.marks()[0][i+j] == "\033[1;100m \033[0m");
         if(good) {
             set = true;
             possible.push_back(i);
@@ -71,7 +71,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
             return true;
         // checking the next complete row
         for(int j=0; j<v.width(); j++)
-            if(r.marks()[x][y+j] != " ")
+            if(r.marks()[x][y+j] != "\033[1;100m \033[0m")
                 return false;
         return true;
     }
@@ -79,7 +79,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         int x = v.pos().first;
         int y = v.pos().second+v.width();
         // Exiting if stopped because of red light
-        if(r.marks()[x+1][0] == "\033[1;31m|\033[0m" || r.marks()[x+1][0] == "\033[1;31mX\033[0m")
+        if(r.marks()[x+1][0] == "\033[1;31;100m|\033[0m" || r.marks()[x+1][0] == "\033[1;31;100mX\033[0m")
             return false;
         // Exiting if vehicle on edge
         if(y >= r.heigth())
@@ -88,7 +88,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         for(int j=0; j<v.length(); j++) {
             if(x-j<0)
                 continue;
-            if(r.marks()[x-j][y] != " ")
+            if(r.marks()[x-j][y] != "\033[1;100m \033[0m")
                 return false;
         }
         return true;
@@ -97,7 +97,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         int x = v.pos().first;
         int y = v.pos().second-1;
         // Exiting if stopped because of red light
-        if(r.marks()[x+1][0] == "\033[1;31m|\033[0m" || r.marks()[x+1][0] == "\033[1;31mX\033[0m")
+        if(r.marks()[x+1][0] == "\033[1;31;100m|\033[0m" || r.marks()[x+1][0] == "\033[1;31;100mX\033[0m")
             return false;
         // Exiting if vehicle on edge
         if(y < 0)
@@ -106,7 +106,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         for(int j=0; j<v.length(); j++) {
             if(x-j<0)
                 continue;
-            if(r.marks()[x-j][y] != " ")
+            if(r.marks()[x-j][y] != "\033[1;100m \033[0m")
                 return false;
         }
         return true;
@@ -119,10 +119,10 @@ bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
         if(i >= r.length() || i < 0)
             continue;
         for(int j=temp.pos().second; j<temp.pos().second+temp.width(); j++)
-            if(r.marks()[i][j] == "\033[1;31mX\033[0m")
-                r.marks()[i][j] = "\033[1;31m|\033[0m";
-            else if(r.marks()[i][j] != "\033[1;31m|\033[0m")
-                r.marks()[i][j] = " ";
+            if(r.marks()[i][j] == "\033[1;31;100mX\033[0m")
+                r.marks()[i][j] = "\033[1;31;100m|\033[0m";
+            else if(r.marks()[i][j] != "\033[1;31;100m|\033[0m")
+                r.marks()[i][j] = "\033[1;100m \033[0m";
     }
     if(direction == front) {
         // Updating the position
@@ -143,10 +143,10 @@ bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
         if(i >= r.length() || i < 0)
             continue;
         for(int j=temp.pos().second; j<temp.pos().second+temp.width(); j++)
-            if(r.marks()[i][j] != "\033[1;31m|\033[0m")
+            if(r.marks()[i][j] != "\033[1;31;100m|\033[0m")
                 r.marks()[i][j] = temp.sym();
             else
-                r.marks()[i][j] = "\033[1;31mX\033[0m";
+                r.marks()[i][j] = "\033[1;31;100mX\033[0m";
     }
     return true;
 }
