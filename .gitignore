@@ -33,3 +33,6 @@
 
 # Macbook
 .DS_Store
+
+#vscode
+./vscode
