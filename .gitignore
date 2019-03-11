@@ -36,3 +36,7 @@
 
 #vscode
 .vscode/*
+
+# Config files and out results
+out.txt
+*.ini
