@@ -44,6 +44,11 @@ public:
         sig = signal;
         t = 0;
         positions = vector<vector<string>>(ln, vector<string>(ht, "\033[1;100m \033[0m"));
+        for(int i=0; i<length; i++)
+            if(ht%2)    // Odd
+                positions[i][(ht-1)/2] = "\033[1;33;100m-\033[0m";
+            else        // Even
+                positions[i][(ht-1)/2] = "\033[1;33;100m_\033[0m";
     }
 
     Road() {
@@ -102,7 +107,7 @@ public:
         for(int i=ln; i>0; --i)
             cout << "--";
         cout << "\n";
-        usleep(250*1000);
+        usleep(150*1000);
     }
 
     // Writing road contents on a file
@@ -138,7 +143,13 @@ public:
     // Turn signal to green
     void signal_green() {
         for(int i=0; i<ht; i++)
-            positions[sig][i] = "\033[1;100m \033[0m";
+            if(i == (ht-1)/2)
+                if(ht%2)    // Odd
+                    positions[sig][i] = "\033[1;33;100m-\033[0m";
+                else        // Even
+                    positions[sig][i] = "\033[1;33;100m_\033[0m";
+            else
+                positions[sig][i] = "\033[1;100m \033[0m";
     }
 
     // Increasing time

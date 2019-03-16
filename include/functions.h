@@ -7,6 +7,9 @@
 // Random numbers
 #include <cstdlib>
 
+// Algorithms library
+#include <algorithm>
+
 using namespace std;
 
 // Road and Vehicle class
@@ -44,7 +47,7 @@ void add_vehicle(Vehicle& v, Road& r) {
     for(int i=0; i<r.heigth()-v.width()+1; i++) {
         good = true;
         for(int j=0; j<v.width(); j++)
-            good = (good)&&(r.marks()[0][i+j] == "\033[1;100m \033[0m");
+            good = (good)&&(r.marks()[0][i+j] == "\033[1;100m \033[0m" || r.marks()[0][i+j] == "\033[1;33;100m_\033[0m" || r.marks()[0][i+j] == "\033[1;33;100m-\033[0m");
         if(good) {
             set = true;
             possible.push_back(i);
@@ -71,7 +74,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
             return true;
         // checking the next complete row
         for(int j=0; j<v.width(); j++)
-            if(r.marks()[x][y+j] != "\033[1;100m \033[0m")
+            if(r.marks()[x][y+j] != "\033[1;100m \033[0m" && r.marks()[x][y+j] != "\033[1;33;100m_\033[0m" && r.marks()[x][y+j] != "\033[1;33;100m-\033[0m")
                 return false;
         return true;
     }
@@ -88,7 +91,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         for(int j=0; j<v.length(); j++) {
             if(x-j<0)
                 continue;
-            if(r.marks()[x-j][y] != "\033[1;100m \033[0m")
+            if(r.marks()[x-j][y] != "\033[1;100m \033[0m" && r.marks()[x-j][y] != "\033[1;33;100m_\033[0m" && r.marks()[x-j][y] != "\033[1;33;100m-\033[0m")
                 return false;
         }
         return true;
@@ -106,7 +109,7 @@ bool movable(Vehicle& v, Road& r, mv direction) {
         for(int j=0; j<v.length(); j++) {
             if(x-j<0)
                 continue;
-            if(r.marks()[x-j][y] != "\033[1;100m \033[0m")
+            if(r.marks()[x-j][y] != "\033[1;100m \033[0m" && r.marks()[x-j][y] != "\033[1;33;100m_\033[0m" && r.marks()[x-j][y] != "\033[1;33;100m-\033[0m")
                 return false;
         }
         return true;
@@ -121,8 +124,15 @@ bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
         for(int j=temp.pos().second; j<temp.pos().second+temp.width(); j++)
             if(r.marks()[i][j] == "\033[1;31;100mX\033[0m")
                 r.marks()[i][j] = "\033[1;31;100m|\033[0m";
-            else if(r.marks()[i][j] != "\033[1;31;100m|\033[0m")
-                r.marks()[i][j] = "\033[1;100m \033[0m";
+            else if(r.marks()[i][j] != "\033[1;31;100m|\033[0m") {
+                if(j == (r.heigth()-1)/2)
+                    if(r.heigth()%2)    // Odd
+                        r.marks()[i][j] = "\033[1;33;100m-\033[0m";
+                    else
+                        r.marks()[i][j] = "\033[1;33;100m_\033[0m";
+                else
+                    r.marks()[i][j] = "\033[1;100m \033[0m";
+                }
     }
     if(direction == front) {
         // Updating the position
@@ -154,6 +164,10 @@ bool set_vehicle(Vehicle& temp, Road& r, mv direction) {
 void move_vehicles(Road& r) {
     if(r.current_vcls().size() == 0)
         return;
+    // Sorting the vehicles giving priority to vehicles in front
+    sort(r.current_vcls().begin(), r.current_vcls().end(), [ ](Vehicle& v1, Vehicle& v2) {
+        return v1.pos().first > v2.pos().first;
+    });
     // Looping over all vehicles
     for(auto it = r.current_vcls().begin(); it < r.current_vcls().end(); it++) {
         Vehicle& temp = *it;
@@ -174,6 +188,8 @@ void move_vehicles(Road& r) {
             else if(movable(temp, r, rt) && (temp.last_move() != lmv::l)) {
                 temp.update_move(lmv::r);
                 set_vehicle(temp, r, rt);
+                // if(movable(temp, r, rt) && i!=(temp.speed() - 1))
+                //     set_vehicle(temp, r, rt);
                 if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
                     temp.update_speed(i+1);
                     break;
@@ -183,6 +199,8 @@ void move_vehicles(Road& r) {
             else if(movable(temp, r, lt) && (temp.last_move() != lmv::r)) {
                 temp.update_move(lmv::l);
                 set_vehicle(temp, r, lt);
+                // if(movable(temp, r, lt) && i!=(temp.speed() - 1))
+                //     set_vehicle(temp, r, lt);
                 if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
                     temp.update_speed(i+1);
                     break;
