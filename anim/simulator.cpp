@@ -315,15 +315,24 @@ void draw_frame() {
 
     // Drawing the road...
     glBegin(GL_QUADS);
-    glColor4f(1, 1, 1, 0.5);
+    glColor4f(0.7, 0.7, 0.7, 0.5);
     glVertex3i(0, road.heigth(), 0);
     glVertex3i(road.length(), road.heigth(), 0);
     glVertex3i(road.length(), 0, 0);
     glVertex3i(0, 0, 0);
 
+    // Drawing the zebra-crossing
+    glColor4f(1, 1, 1, 1);
+    for(float i=0; i<=road.heigth(); i+=1.5) {
+        glVertex3f(road.signal_position()-0.5, i, 1);
+        glVertex3f(road.signal_position()+1.5, i, 1);
+        glVertex3f(road.signal_position()+1.5, i+1, 1);
+        glVertex3f(road.signal_position()-0.5, i+1, 1);
+    }
+
     // Drawing the divider
     glColor4f(1, 1, 0, 0.15);
-    for(int i=1; i<=road.length(); i+=2) {
+    for(float i=0.5; i<=road.length(); i+=2) {
         glVertex3f(i, road.heigth()/2.0-0.1, 1);
         glVertex3f(i+1, road.heigth()/2.0-0.1, 1);
         glVertex3f(i+1, road.heigth()/2.0+0.1, 1);
@@ -396,7 +405,7 @@ void drawScene(void)
 // Initialize OpenGL's rendering modes
 void initRendering()
 {
-    glShadeModel(GL_FLAT);    // The default value of GL_SMOOTH is usually better
+    glShadeModel(GL_SMOOTH);    // The default value of GL_SMOOTH is usually better
     glEnable(GL_DEPTH_TEST);    // Depth testing must be turned on
 }
 
