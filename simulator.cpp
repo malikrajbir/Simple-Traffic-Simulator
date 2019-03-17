@@ -263,13 +263,13 @@ void process(ifstream& file, ofstream& out) {
 int main(int argc, char const *argv[]) {
 
     // Taking the file input, for processing
-    string filename = "config.ini";
-    ifstream file(filename);
+    // string filename = "config.ini";
+    string filename = argv[1];
+    ifstream file("./input/"+filename);
     string line;
 
     // Output stream for
-    ofstream out("out.txt");
-
+    ofstream out("./output/"+filename.substr(0,filename.length()-4)+"_out.txt");
     // Processing further if the file is in place
     if(file.is_open()) {
         process(file, out);

@@ -38,5 +38,7 @@
 .vscode/*
 
 # Config files and out results
-out.txt
+*.txt
 *.ini
+*/opengl
+terminal

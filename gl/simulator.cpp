@@ -375,7 +375,7 @@ void draw_frame() {
     glFlush();
     // Swapping the buffers
     glutSwapBuffers();
-    usleep(75*1000);
+    usleep(180*1000);
     // glutPostRedisplay();
     return;
 }
@@ -425,8 +425,8 @@ void resizeWindow(int w, int h)
 int main(int argc, char** argv) {
 
     // Taking the file input, for processing
-    string filename = "config.ini";
-    file = ifstream(filename);
+    string filename = argv[1];
+    file = ifstream("../input/"+filename);
 
     read_config();  // This read shall establish the road details, now we can design the window with road prefferences
 
