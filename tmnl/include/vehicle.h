@@ -42,7 +42,7 @@ private:
             return "\033[1;31;100m";
         else if(clr == "YELLOW")
             return "\033[1;33;100m";
-        return "";
+        return "\033[1;100m";
     }
     // Default string for normalisation
     string norm = "\033[0m";

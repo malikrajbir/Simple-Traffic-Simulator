@@ -205,6 +205,8 @@ void move_vehicles(Road& r) {
             }
             // If not, stopping and setting the current movement as speed
             else {
+                if(random()%100 < 5)
+                    temp.update_move(lmv::f);
                 temp.update_speed(i);
                 break;
             }
