@@ -4,9 +4,9 @@
 #include <fstream>
 #include <sstream>
 
-#include "road.h"
-#include "vehicle.h"
-#include "functions.h"
+#include "./include/road.h"
+#include "./include/vehicle.h"
+#include "./include/functions.h"
 
 #define GL_SILENCE_DEPRECATION
 
@@ -48,6 +48,8 @@ bool read_more = true;
 // Loop handle (to take care of 'Pass' & END parameters)
 bool loop = false;
 int loop_pass = 0;
+// Animation speed (usleep)
+int animate_step = 100;
 
 // --------------------------------
 // CODE
@@ -307,6 +309,59 @@ void read_config() {
     }
 }
 
+// Function for handling the key input to increase or decrease animation speed
+void speed_maintain( int key, int x, int y )
+{
+	switch ( key ) {
+        // Up key
+    	case GLUT_KEY_DOWN:
+    		if ( animate_step < 200) {			// Avoid overflow problems
+    			animate_step += 10;		// Increase the angle increment
+    		}
+    		break;
+        // Down key
+    	case GLUT_KEY_UP:
+    		if (animate_step > 50) {		// Avoid underflow problems.
+    			animate_step -= 10;	// Decrease the angle increment
+    		}
+    		break;
+	}
+}
+
+void draw_vehicle(Vehicle& current) {
+    // Vehicle current = *it;
+    // Setting the color of vehicle
+    if(current.real_color() == "RED")
+        glColor4f(1, 0, 0, 1);
+    else if(current.real_color() == "BLUE")
+        glColor4f(0, 0, 1, 1);
+    else if(current.real_color() == "GREEN")
+        glColor4f(0, 1, 0, 1);
+    else
+        glColor4f(1, 1, 0, 1);
+    // Getting the coordinates
+    int x = current.pos().first;
+    int y = road.heigth() - current.pos().second;
+    // First base
+    glVertex3f(x-current.length()+0.1, y-0.1, 2);
+    glVertex3f(x-0.5, y-0.1, 2);
+    glVertex3f(x-0.5, y-current.width()+0.1, 2);
+    glVertex3f(x-current.length()+0.1, y-current.width()+0.1, 2);
+    // Second base
+    glVertex3f(x-current.length()+0.1, y-0.4, 2);
+    glVertex3f(x-0.1, y-0.4, 2);
+    glVertex3f(x-0.1, y-current.width()+0.4, 2);
+    glVertex3f(x-current.length()+0.1, y-current.width()+0.4, 2);
+    // Head lights (Trapezoid)
+    glColor4f(1, 1, 0, 1); // Yellow color for head lights
+    glVertex3f(x-0.5, y-0.1, 2);
+    glVertex3f(x-0.1, y-0.4, 2);
+    glVertex3f(x-0.1, y-current.width()+0.4, 2);
+    glVertex3f(x-0.5, y-current.width()+0.1, 2);
+    return;
+}
+
+// The draw function used to draw the complete layout, independent of the GLUTMainLoop
 void draw_frame() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Road hasn't been initialised (NOT NEEDED)
@@ -341,32 +396,32 @@ void draw_frame() {
 
     if(draw_signal)  {// Draw the red light signal
         glColor4f(1, 0, 0, 2);
-        glVertex3f(road.signal_position()-0.9, road.heigth(), 2);
+        glVertex3f(road.signal_position()-0.7, road.heigth(), 2);
         glVertex3f(road.signal_position()-0.4, road.heigth(), 2);
         glVertex3f(road.signal_position()-0.4, 0, 2);
-        glVertex3f(road.signal_position()-0.9, 0, 2);
+        glVertex3f(road.signal_position()-0.7, 0, 2);
     }
 
     // Drawing the vehicles
-    glBegin(GL_QUADS);
     for(auto it = road.current_vcls().begin(); it<road.current_vcls().end(); it++) {
-        Vehicle current = *it;
-        // Setting the color of vehicle
-        if(current.real_color() == "RED")
-            glColor4f(1, 0, 0, 1);
-        else if(current.real_color() == "BLUE")
-            glColor4f(0, 0, 1, 1);
-        else if(current.real_color() == "GREEN")
-            glColor4f(0, 1, 0, 1);
-        else
-            glColor4f(1, 1, 0, 1);
-        // Getting the coordinates
-        int x = current.pos().first;
-        int y = road.heigth() - current.pos().second;
-        glVertex3f(x-current.length()+0.1, y-0.1, 2);
-        glVertex3f(x-0.1, y-0.1, 2);
-        glVertex3f(x-0.1, y-current.width()+0.1, 2);
-        glVertex3f(x-current.length()+0.1, y-current.width()+0.1, 2);
+        draw_vehicle(*it);
+        // Vehicle current = *it;
+        // // Setting the color of vehicle
+        // if(current.real_color() == "RED")
+        //     glColor4f(1, 0, 0, 1);
+        // else if(current.real_color() == "BLUE")
+        //     glColor4f(0, 0, 1, 1);
+        // else if(current.real_color() == "GREEN")
+        //     glColor4f(0, 1, 0, 1);
+        // else
+        //     glColor4f(1, 1, 0, 1);
+        // // Getting the coordinates
+        // int x = current.pos().first;
+        // int y = road.heigth() - current.pos().second;
+        // glVertex3f(x-current.length()+0.1, y-0.1, 2);
+        // glVertex3f(x-0.1, y-0.1, 2);
+        // glVertex3f(x-0.1, y-current.width()+0.1, 2);
+        // glVertex3f(x-current.length()+0.1, y-current.width()+0.1, 2);
     }
     // Ending the deisgnation
     glEnd();
@@ -375,11 +430,11 @@ void draw_frame() {
     glFlush();
     // Swapping the buffers
     glutSwapBuffers();
-    usleep(180*1000);
-    // glutPostRedisplay();
+    usleep(animate_step*1000);
     return;
 }
 
+// The default redrawing function for LOOP
 void drawScene(void)
 {
     // Reading from the config file and performing the desired action
@@ -393,7 +448,6 @@ void drawScene(void)
             if(road.current_vcls().size() == 0)
                 exit(0);
         pass_time(road);
-        // cout << loop_pass << "\n";
         loop_pass--;
         if(loop_pass == 0)
             loop = false;
@@ -405,8 +459,8 @@ void drawScene(void)
 // Initialize OpenGL's rendering modes
 void initRendering()
 {
-    glShadeModel(GL_SMOOTH);    // The default value of GL_SMOOTH is usually better
-    glEnable(GL_DEPTH_TEST);    // Depth testing must be turned on
+    glShadeModel(GL_SMOOTH);    // Shade model
+    glEnable(GL_DEPTH_TEST);    // Depth testing is turned on
 }
 
 // Called when the window is resized
@@ -426,7 +480,7 @@ int main(int argc, char** argv) {
 
     // Taking the file input, for processing
     string filename = argv[1];
-    file = ifstream("../input/"+filename);
+    file = ifstream(filename);
 
     read_config();  // This read shall establish the road details, now we can design the window with road prefferences
 
@@ -442,6 +496,8 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(1500, 1500*y/x);
     glutCreateWindow("Traffic Simulation");
+    // Set up callback functions for key presses
+	glutSpecialFunc(speed_maintain);
     // Initialising OpenGL rendering
     initRendering();
     // Function for redrawing

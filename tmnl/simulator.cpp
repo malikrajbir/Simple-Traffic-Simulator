@@ -265,7 +265,7 @@ int main(int argc, char const *argv[]) {
     // Taking the file input, for processing
     // string filename = "config.ini";
     string filename = argv[1];
-    ifstream file("./input/"+filename);
+    ifstream file(filename);
     string line;
 
     // Output stream for
