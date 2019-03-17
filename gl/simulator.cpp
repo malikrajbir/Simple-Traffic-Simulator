@@ -49,7 +49,7 @@ bool read_more = true;
 bool loop = false;
 int loop_pass = 0;
 // Animation speed (usleep)
-int animate_step = 100;
+int animate_step = 200;
 
 // --------------------------------
 // CODE
@@ -337,8 +337,10 @@ void draw_vehicle(Vehicle& current) {
         glColor4f(0, 0, 1, 1);
     else if(current.real_color() == "GREEN")
         glColor4f(0, 1, 0, 1);
-    else
+    else if(current.real_color() == "GREEN")
         glColor4f(1, 1, 0, 1);
+    else
+        glColor4f(0, 0, 0, 1);
     // Getting the coordinates
     int x = current.pos().first;
     int y = road.heigth() - current.pos().second;
@@ -388,6 +390,8 @@ void draw_frame() {
     // Drawing the divider
     glColor4f(1, 1, 0, 0.15);
     for(float i=0.5; i<=road.length(); i+=2) {
+        if(i>road.signal_position()-1.5 && i<road.signal_position()+1.5)
+            continue;
         glVertex3f(i, road.heigth()/2.0-0.1, 1);
         glVertex3f(i+1, road.heigth()/2.0-0.1, 1);
         glVertex3f(i+1, road.heigth()/2.0+0.1, 1);
@@ -405,23 +409,6 @@ void draw_frame() {
     // Drawing the vehicles
     for(auto it = road.current_vcls().begin(); it<road.current_vcls().end(); it++) {
         draw_vehicle(*it);
-        // Vehicle current = *it;
-        // // Setting the color of vehicle
-        // if(current.real_color() == "RED")
-        //     glColor4f(1, 0, 0, 1);
-        // else if(current.real_color() == "BLUE")
-        //     glColor4f(0, 0, 1, 1);
-        // else if(current.real_color() == "GREEN")
-        //     glColor4f(0, 1, 0, 1);
-        // else
-        //     glColor4f(1, 1, 0, 1);
-        // // Getting the coordinates
-        // int x = current.pos().first;
-        // int y = road.heigth() - current.pos().second;
-        // glVertex3f(x-current.length()+0.1, y-0.1, 2);
-        // glVertex3f(x-0.1, y-0.1, 2);
-        // glVertex3f(x-0.1, y-current.width()+0.1, 2);
-        // glVertex3f(x-current.length()+0.1, y-current.width()+0.1, 2);
     }
     // Ending the deisgnation
     glEnd();
