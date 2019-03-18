@@ -337,7 +337,7 @@ void draw_vehicle(Vehicle& current) {
         glColor4f(0, 0, 1, 1);
     else if(current.real_color() == "GREEN")
         glColor4f(0, 1, 0, 1);
-    else if(current.real_color() == "GREEN")
+    else if(current.real_color() == "YELLOW")
         glColor4f(1, 1, 0, 1);
     else
         glColor4f(0, 0, 0, 1);

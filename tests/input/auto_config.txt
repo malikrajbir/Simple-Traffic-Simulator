@@ -10,9 +10,9 @@
 
 # 1. Define Road Parameters
 Road_Id = 1			# Unique Id for the simulation
-Road_Length = 60
-Road_Width = 15
-Road_Signal = 30
+Road_Length = 120
+Road_Width = 35
+Road_Signal = 60
 
 # 2. Define default params for all vehicle types
 Default_MaxSpeed = 1 		# Max Speed per second
