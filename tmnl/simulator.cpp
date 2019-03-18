@@ -268,8 +268,13 @@ int main(int argc, char const *argv[]) {
     ifstream file(filename);
     string line;
 
+    ofstream out;
+
     // Output stream for
-    ofstream out("./output/"+filename.substr(0,filename.length()-4)+"_out.txt");
+    if(argc == 3)
+        out = ofstream(argv[2]);
+    else
+        out = ofstream("out.txt");
     // Processing further if the file is in place
     if(file.is_open()) {
         process(file, out);
