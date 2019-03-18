@@ -43,3 +43,8 @@ Two formats are provided to run the code.
   Running : `./opengl <config_file>`
 
   Also, during the simulation the `up` and `down` keys can be used to adjust simulation speed.
+
+### Interactive Animation Module
+
+We have also designed a model where the configuration file provides information only till vehicle categories. The time commands are provided manually by the user inputting from the keyboard.
+This gives more power to the user to test the simulation and *enjoy!*
