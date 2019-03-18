@@ -53,6 +53,7 @@ bool draw_signal = false;
 bool read_more = true;
 // The running check, allows whether to change the screen or not
 bool live = false;
+bool paused = false;
 // Animation speed (usleep)
 int animate_step = 200;
 
@@ -72,8 +73,13 @@ void pass_time(Road& r) {
 
 // Same as above but with vehicles add in place.
 void add_v(Road& r, Vehicle v) {
-    move_vehicles(r);
-    add_vehicle(v, r);
+    if(!paused) // Vehicles are not moved when added when paused
+        move_vehicles(r);
+    try {
+        add_vehicle(v, r);
+    }   
+    // Try adding vehicle, if not possible dont add...
+    catch(...) {}   // Do nothing...
     r.inc_time();
     draw_frame();
 }
@@ -289,6 +295,10 @@ void input_key( unsigned char key, int x, int y )
             }
             break;
         //----------------------------------------
+        case 13:
+            paused = !paused;
+            break;
+        //----------------------------------------
         case 27:	// Escape key
             exit(1);
         //----------------------------------------
@@ -413,7 +423,7 @@ void drawScene(void)
         // Clear the rendering window
         read_config();
     }
-    if(live) {
+    if(live && !paused) {
         pass_time(road);
     }
     // Trigger automatic redraw for animation...
