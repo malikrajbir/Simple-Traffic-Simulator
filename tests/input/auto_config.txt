@@ -1,0 +1,56 @@
+#********************************************************************************
+#    Config for POC prototype for Traffic Simulator
+#    IITD/CSE/COP-290/2018-19/SEM2/Assignment-2
+#    Instructor - Rijurekha Sen
+#
+#    Version : 2.0
+#          By Rajat and Rajbir
+#********************************************************************************/
+# Comment starts with #
+
+# 1. Define Road Parameters
+Road_Id = 1			# Unique Id for the simulation
+Road_Length = 60
+Road_Width = 15
+Road_Signal = 30
+
+# 2. Define default params for all vehicle types
+Default_MaxSpeed = 1 		# Max Speed per second
+Default_Acceleration = 1	# Increase in speed per second
+
+# 3. Define params for specific vehicle types
+Vehicle_Type = car		# A new vehicle class will start with a type field
+Vehicle_Length = 2
+Vehicle_Width = 2
+Vehicle_MaxSpeed = 3
+Vehicle_Acceleration = 1
+
+Vehicle_Type = motorbike		# The first character will be used as the symbol for printing
+Vehicle_Length = 2
+Vehicle_Width = 1
+Vehicle_MaxSpeed = 4
+Vehicle_Acceleration = 2
+
+Vehicle_Type = bus
+Vehicle_Length = 3
+Vehicle_Width = 2
+Vehicle_MaxSpeed = 2
+Vehicle_Acceleration = 1
+
+Vehicle_Type = truck
+Vehicle_Length = 4
+Vehicle_Width = 2
+
+Vehicle_Type = autorickshaw
+Vehicle_Length = 2
+Vehicle_Width = 2
+Vehicle_MaxSpeed = 2
+Vehicle_Acceleration = 1
+
+Vehicle_Type = supertruck
+Vehicle_Length = 6
+Vehicle_Width = 3
+
+# Definitions over
+# 4. Start the simulation
+START
