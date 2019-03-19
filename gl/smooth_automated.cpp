@@ -263,7 +263,7 @@ void speed_maintain( int key, int x, int y )
 	switch ( key ) {
         // Up key
     	case GLUT_KEY_DOWN:
-    		if ( animate_step < 50) {			// Avoid overflow problems
+    		if ( animate_step < 500) {			// Avoid overflow problems
     			animate_step *= 2.0;		// Increase the angle increment
     		}
     		break;
@@ -348,8 +348,8 @@ void draw_vehicle(Vehicle& current) {
     int xnew = current.pos().first;
     int ynew = road.heigth() - current.pos().second;
 
-    float x = xold*(loop_index/10.0)+xnew*(1.0 - (loop_index/10.0));
-    float y = yold*(loop_index/10.0)+ynew*(1.0 - (loop_index/10.0));
+    float x = xold*(loop_index/100.0)+xnew*(1.0 - (loop_index/100.0));
+    float y = yold*(loop_index/100.0)+ynew*(1.0 - (loop_index/100.0));
     // First base
     glVertex3f(x-current.length()+0.1, y-0.1, 2);
     glVertex3f(x-0.5, y-0.1, 2);
@@ -430,7 +430,6 @@ void draw_frame() {
 // The default redrawing function for LOOP
 void drawScene(void)
 {
-    cout << loop_index << "\n";
     // Reading from the config file and performing the desired action
     if(read_more) {
         // Clear the rendering window
@@ -439,7 +438,7 @@ void drawScene(void)
     if(live && !paused && !loop_set) {
         pass_time(road);
         loop_set = true;
-        loop_index = 9;
+        loop_index = 99;
     }
     if(loop_set) {
         loop_index--;
