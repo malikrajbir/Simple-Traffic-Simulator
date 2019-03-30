@@ -62,7 +62,7 @@ public:
         ac = param[3];
         symbol = s;
         last = not_set;
-        last_key = pair<int, int>(0, 0);
+        last_key = pair<int, int>(-1, -1);
     }
 
     // Symbol for the vehicle

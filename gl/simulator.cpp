@@ -4,9 +4,9 @@
 #include <fstream>
 #include <sstream>
 
-#include "./include/road.h"
-#include "./include/vehicle.h"
-#include "./include/functions.h"
+#include "./include/road_auto.h"
+#include "./include/vehicle_auto.h"
+#include "./include/functions_auto.h"
 
 #define GL_SILENCE_DEPRECATION
 
@@ -49,7 +49,13 @@ bool read_more = true;
 bool loop = false;
 int loop_pass = 0;
 // Animation speed (usleep)
-int animate_step = 200;
+int animate_step = 600;
+
+// For smooth animation, the fabrication loop
+bool in_transit = false;
+float loop_index = 0;
+float fine_diff = 200.0; // The no. of fabrics per time
+
 
 // --------------------------------
 // CODE
@@ -60,6 +66,8 @@ void draw_frame();
 // Increasing the time counter by 1s
 // Making appropriate changes for that 1s (moving...)
 void pass_time(Road& r) {
+    in_transit = true;
+    loop_index = fine_diff-1;
     move_vehicles(r);
     r.inc_time();
     draw_frame();
@@ -67,6 +75,8 @@ void pass_time(Road& r) {
 
 // Same as above but with vehicles add in place.
 void add_v(Road& r, Vehicle v) {
+    in_transit = true;
+    loop_index = fine_diff-1;
     move_vehicles(r);
     add_vehicle(v, r);
     r.inc_time();
@@ -341,9 +351,14 @@ void draw_vehicle(Vehicle& current) {
         glColor4f(1, 1, 0, 1);
     else
         glColor4f(0, 0, 0, 1);
-    // Getting the coordinates
-    int x = current.pos().first;
-    int y = road.heigth() - current.pos().second;
+        // Getting the coordinates
+        int xold = current.last_pos().first;
+        int yold = road.heigth() - current.last_pos().second;
+        int xnew = current.pos().first;
+        int ynew = road.heigth() - current.pos().second;
+        // Placing in the right fabric
+        float x = xold*(loop_index/fine_diff)+xnew*(1.0 - (loop_index/fine_diff));
+        float y = yold*(loop_index/fine_diff)+ynew*(1.0 - (loop_index/fine_diff));
     // First base
     glVertex3f(x-current.length()+0.1, y-0.1, 2);
     glVertex3f(x-0.5, y-0.1, 2);
@@ -417,7 +432,7 @@ void draw_frame() {
     glFlush();
     // Swapping the buffers
     glutSwapBuffers();
-    usleep(animate_step*1000);
+    usleep(animate_step);
     return;
 }
 
@@ -425,12 +440,12 @@ void draw_frame() {
 void drawScene(void)
 {
     // Reading from the config file and performing the desired action
-    if(read_more && !loop) {
+    if(read_more && !loop && !in_transit) {
         // Clear the rendering window
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         read_config();
     }
-    if(loop) {
+    if(loop && !in_transit) {
         if(loop_pass < 0)
             if(road.current_vcls().size() == 0)
                 exit(0);
@@ -438,6 +453,12 @@ void drawScene(void)
         loop_pass--;
         if(loop_pass == 0)
             loop = false;
+    }
+    if(in_transit) {
+        loop_index--;
+        draw_frame();
+        if(loop_index == 0)
+            in_transit = false;
     }
     // Trigger automatic redraw for animation...
     glutPostRedisplay();
