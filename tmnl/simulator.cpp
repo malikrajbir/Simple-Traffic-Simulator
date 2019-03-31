@@ -269,7 +269,7 @@ void show_error_exit(int pass = 0) {
     }
     else {
         cerr << "Flags not correctly set.\n";
-        cerr << "./opengl -in <infile> [-out <outfile>] [-lapse <sleeptime>]\n" ;
+        cerr << "./terminal -in <infile> [-out <outfile>] [-lapse <sleeptime>]\n" ;
     }
     exit(0);
 }
@@ -291,7 +291,7 @@ int main(int argc, char const *argv[]) {
             if(i == argc-1)
                 show_error_exit();
             file = ifstream(argv[++i]);
-            fi = i;  
+            fi = i;
         }
         else if(arg == "-out")
         // Output file

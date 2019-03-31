@@ -490,7 +490,7 @@ void show_error_exit(int pass = 0) {
     }
     else {
         cerr << "Flags not correctly set.\n";
-        cerr << "./opengl -in <infile> [-q <time_diff>]\n" ;
+        cerr << "./opengl -in <infile> [-d <time_diff>]\n" ;
     }
     exit(0);
 }
@@ -509,19 +509,18 @@ int main(int argc, char** argv) {
             if(i == argc-1)
                 show_error_exit();
             file = ifstream(argv[++i]);
-            fi = i;  
+            fi = i;
         }
-        else if(arg == "-q")
+        else if(arg == "-d")
         // Lapse time
         {
             if(i == argc-1)
                 show_error_exit();
-            fine_diff = stof(argv[++i]);        
+            fine_diff = stof(argv[++i]);
         }
         else
         // Invalid Flag
         {
-            cout << arg << "\n";
             show_error_exit(1);
         }
     }

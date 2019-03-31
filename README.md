@@ -1,6 +1,6 @@
 ## Traffic Simulator
 
-Working of a simple traffic simulator.
+A program to simulate simpleton traffic on the terminal or using a GUI API (OpenGL).
 
 #### Configuration File
 
@@ -12,7 +12,7 @@ It takes in a _configuration file_ and processes it to output various simulation
   - These include the default *acceleration* and *velocity.*
 - **Vehicle Categories**
   - Here features of vehicles are defined.
-  - These vehicles are called later during the simualtion.
+  - These vehicles are called later during the simulation.
 - **Time commands**
   - This is the main simulation. It controls the inflow of vehicles and handling of traffic lights.
   - It has three keywords
@@ -32,7 +32,7 @@ Two formats are provided to run the code.
 
   Compiling : `cd tmnl && make`
 
-  Running : `./terminal <config_file>`
+  Running : `./terminal -in <infile> [-out <outfile>] [-lapse <sleeptime>]`
 
 - **Animation Mode**
 
@@ -40,11 +40,13 @@ Two formats are provided to run the code.
 
   Compiling : `cd gl && make`
 
-  Running : `./opengl <config_file>`
+  Running : `./opengl -in <infile> [-d <time_diff>]`
+
+- **AUTO Mode**
+  This case is similar to above, except for state transitions/vehicle-entry is determined by the user input from the keyboard. The configuration file for this case remains the same without the _Time Commands_.
+
+  Compiling : `cd gl && make auto`
+
+  Running : `./auto -in <infile> [-d <time_diff>]`
 
   Also, during the simulation the `up` and `down` keys can be used to adjust simulation speed.
-
-### Interactive Animation Module
-
-We have also designed a model where the configuration file provides information only till vehicle categories. The time commands are provided manually by the user inputting from the keyboard.
-This gives more power to the user to test the simulation and *enjoy!*

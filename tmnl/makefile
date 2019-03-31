@@ -1,5 +1,5 @@
 make:
-		@g++ simulator.cpp -o terminal
+		@g++ -std=c++11 simulator.cpp -o terminal
 
 clean:
 		@rm -f terminal
