@@ -90,7 +90,7 @@ public:
     }
 
     // Visualising the road on the terminal
-    void show_road() {
+    void show_road(int pause=150) {
         cout << "\033[H\033[J";
         cout << "Time: " << t << "\n";
         //-------- Line
@@ -107,7 +107,7 @@ public:
         for(int i=ln; i>0; --i)
             cout << "--";
         cout << "\n";
-        usleep(150*1000);
+        usleep(pause*1000);
     }
 
     // Writing road contents on a file
