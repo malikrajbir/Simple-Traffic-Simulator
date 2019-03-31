@@ -9,7 +9,7 @@
 #include<unistd.h>
 
 // Vehicle class
-#include "vehicle_auto.h"
+#include "vehicle.h"
 
 using namespace std;
 

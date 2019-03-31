@@ -13,8 +13,8 @@
 using namespace std;
 
 // Road and Vehicle class
-#include "road_auto.h"
-#include "vehicle_auto.h"
+#include "road.h"
+#include "vehicle.h"
 
 // CLASS OF FUNCTIONS INVOLVING BOTH ROAD AND VEHICLES
 

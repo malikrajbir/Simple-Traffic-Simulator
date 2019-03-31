@@ -4,9 +4,9 @@
 #include <fstream>
 #include <sstream>
 
-#include "./include/road_auto.h"
-#include "./include/vehicle_auto.h"
-#include "./include/functions_auto.h"
+#include "./include/road.h"
+#include "./include/vehicle.h"
+#include "./include/functions.h"
 
 #define GL_SILENCE_DEPRECATION
 
