@@ -479,7 +479,7 @@ void resizeWindow(int w, int h)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, road.length(), 0, road.heigth(), -2, 2);
+    glOrtho(0, road.length()-2, 0, road.heigth(), -2, 2);
 }
 
 
@@ -490,6 +490,13 @@ int main(int argc, char** argv) {
     string filename = argv[1];
     file = ifstream(filename);
 
+    if(argc == 3)
+        try {
+            fine_diff = stof(argv[2]);
+        }
+        catch(...) {
+            fine_diff = 200.0;
+        }
     read_config();  // This read shall establish the road details, now we can design the window with road prefferences
 
     int x = road.length();

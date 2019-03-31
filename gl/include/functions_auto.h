@@ -69,13 +69,26 @@ bool movable(Vehicle& v, Road& r, mv direction) {
     if(direction == front) {
         int x = v.pos().first+1;
         int y = v.pos().second;
+        int len = v.length();
         // If exiting (no other ahead)
         if(x >= r.length())
             return true;
         // checking the next complete row
-        for(int j=0; j<v.width(); j++)
-            if(r.marks()[x][y+j] != "\033[1;100m \033[0m" && r.marks()[x][y+j] != "\033[1;33;100m_\033[0m")
+        for(int j=0; j<v.width(); j++) {
+            if(r.marks()[x][y+j] == "\033[1;31;100m|\033[0m")
+                if(v.width() == 1)
+                    continue;
+            if((r.marks()[x][y+j] != "\033[1;100m \033[0m" && r.marks()[x][y+j] != "\033[1;33;100m_\033[0m") || (r.marks()[x-1][y+j] == "\033[1;31;100mX\033[0m" && v.width() != 1))
                 return false;
+            if((v.width() == 1) && (x-len >= 0))
+            try {
+                if((r.marks()[x-len][y+j] == "\033[1;31;100mX\033[0m"))
+                    return false;
+            }
+            catch(...) {
+                continue;
+            }
+        }
         return true;
     }
     else if (direction == rt) {
@@ -188,19 +201,19 @@ void move_vehicles(Road& r) {
             else if(movable(temp, r, rt) && (temp.last_move() != lmv::l)) {
                 temp.update_move(lmv::r);
                 set_vehicle(temp, r, rt);
-                if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
+                // if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
                     temp.update_speed(i+1);
                     break;
-                }
+                // }
             }
             // If movable in downward (right w.r.t. vehicle) direction, do once (eventual overtake)
             else if(movable(temp, r, lt) && (temp.last_move() != lmv::r)) {
                 temp.update_move(lmv::l);
                 set_vehicle(temp, r, lt);
-                if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
+                // if(i>0) {     // If blocked from ahead in the start only then 2 steps allowed, else 1
                     temp.update_speed(i+1);
                     break;
-                }
+                // }
             }
             // If not, stopping and setting the current movement as speed
             else {

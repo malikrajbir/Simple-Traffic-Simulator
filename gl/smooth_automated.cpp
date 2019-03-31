@@ -61,6 +61,7 @@ float animate_step = 10;
 bool loop_set = false;
 float loop_index = 0;
 vector<char> vehicle_buffer{};
+float fine_diff = 10.0; // The no. of fabrics per time
 
 // --------------------------------
 // CODE
@@ -335,11 +336,11 @@ void draw_vehicle(Vehicle& current) {
     if(current.real_color() == "RED")
         glColor4f(1, 0, 0, 1);
     else if(current.real_color() == "BLUE")
-        glColor4f(0, 0, 1, 1);
+        glColor4f(0, 0, 1, 0.5);
     else if(current.real_color() == "GREEN")
-        glColor4f(0, 1, 0, 1);
+        glColor4f(0, 1, 0, 0.11);
     else if(current.real_color() == "YELLOW")
-        glColor4f(1, 1, 0, 1);
+        glColor4f(1, 0, 1, 0.1);
     else
         glColor4f(0, 0, 0, 1);
     // Getting the coordinates
@@ -348,8 +349,8 @@ void draw_vehicle(Vehicle& current) {
     int xnew = current.pos().first;
     int ynew = road.heigth() - current.pos().second;
 
-    float x = xold*(loop_index/100.0)+xnew*(1.0 - (loop_index/100.0));
-    float y = yold*(loop_index/100.0)+ynew*(1.0 - (loop_index/100.0));
+    float x = xold*(loop_index/fine_diff)+xnew*(1.0 - (loop_index/fine_diff));
+    float y = yold*(loop_index/fine_diff)+ynew*(1.0 - (loop_index/fine_diff));
     // First base
     glVertex3f(x-current.length()+0.1, y-0.1, 2);
     glVertex3f(x-0.5, y-0.1, 2);
@@ -438,7 +439,7 @@ void drawScene(void)
     if(live && !paused && !loop_set) {
         pass_time(road);
         loop_set = true;
-        loop_index = 99;
+        loop_index = fine_diff-1;
     }
     if(loop_set) {
         loop_index--;
@@ -479,6 +480,13 @@ int main(int argc, char** argv) {
     // Taking the file input, for processing
     string filename = argv[1];
     file = ifstream(filename);
+    if(argc == 3)
+        try {
+            fine_diff = stof(argv[2]);
+        }
+        catch(...) {
+            fine_diff = 200.0;
+        }
 
     read_config();  // This read shall establish the road details, now we can design the window with road prefferences
 
