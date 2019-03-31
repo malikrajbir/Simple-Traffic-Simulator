@@ -53,8 +53,10 @@ void add_vehicle(Vehicle& v, Road& r) {
             possible.push_back(i);
         }
     }
-    if(!set)
-        throw runtime_error("Not possible for vehicle to enter");
+    if(!set) {
+        cout << "Not possible for vehicle to enter...\n";
+        return;
+    }
     int rand_pos = possible[rand()%possible.size()];
     v.update_pos(pair<int, int>(0, rand_pos));
     r.current_vcls().push_back(v);
