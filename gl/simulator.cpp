@@ -482,22 +482,63 @@ void resizeWindow(int w, int h)
     glOrtho(0, road.length()-2, 0, road.heigth(), -2, 2);
 }
 
+// Function for error indication in command line
+void show_error_exit(int pass = 0) {
+    if(pass) // Illegal flag indicated
+    {
+        cerr << "Illegal flag present.\n";
+    }
+    else {
+        cerr << "Flags not correctly set.\n";
+        cerr << "./opengl -in <infile> [-q <time_diff>]\n" ;
+    }
+    exit(0);
+}
+
 
 // The main function
 int main(int argc, char** argv) {
+    int fi=0;
 
-    // Taking the file input, for processing
-    string filename = argv[1];
-    file = ifstream(filename);
+    // Processing the terminal flags
+    for(int i=1; i<argc; i++) {
+        string arg = argv[i];
+        if(arg == "-in")
+        // Input file
+        {
+            if(i == argc-1)
+                show_error_exit();
+            file = ifstream(argv[++i]);
+            fi = i;  
+        }
+        else if(arg == "-q")
+        // Lapse time
+        {
+            if(i == argc-1)
+                show_error_exit();
+            fine_diff = stof(argv[++i]);        
+        }
+        else
+        // Invalid Flag
+        {
+            cout << arg << "\n";
+            show_error_exit(1);
+        }
+    }
 
-    if(argc == 3)
-        try {
-            fine_diff = stof(argv[2]);
-        }
-        catch(...) {
-            fine_diff = 200.0;
-        }
-    read_config();  // This read shall establish the road details, now we can design the window with road prefferences
+    // -in flag not in command line
+    if(fi == 0) {
+        cout << "No input (config) file indicated. Exiting...\n";
+        exit(0);
+    }
+
+    // Processing further if the file is in place
+    if(file.is_open()) {
+        read_config();    // This read shall establish the road details, now we can design the window with road prefferences
+    }
+    else {
+        cout<<"Unable to open file : "<<argv[fi]<<"\n";
+    }
 
     int x = road.length();
     int y = road.heigth();

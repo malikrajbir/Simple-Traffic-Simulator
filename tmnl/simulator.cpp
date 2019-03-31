@@ -12,13 +12,15 @@ using namespace std;
 
 // NOT PREPARED CURRENTLY ONLY FOR TESTING
 ofstream out_file;
+// The default lapse time
+int lapse = 150;
 
 // Increasing the time counter by 1s
 // Making appropriate changes for that 1s (moving, printing...)
 void pass_time(Road& r, ofstream& out) {
     move_vehicles(r);
     r.inc_time();
-    r.show_road();
+    r.show_road(lapse);
     r.wrt_road(out);
 }
 
@@ -27,7 +29,7 @@ void add_v(Road& r, Vehicle v, ofstream& out) {
     move_vehicles(r);
     add_vehicle(v, r);
     r.inc_time();
-    r.show_road();
+    r.show_road(lapse);
     r.wrt_road(out);
 }
 
@@ -259,27 +261,77 @@ void process(ifstream& file, ofstream& out) {
     }
 }
 
+// Function for error indication in command line
+void show_error_exit(int pass = 0) {
+    if(pass) // Illegal flag indicated
+    {
+        cerr << "Illegal flag present.\n";
+    }
+    else {
+        cerr << "Flags not correctly set.\n";
+        cerr << "./opengl -in <infile> [-out <outfile>] [-lapse <sleeptime>]\n" ;
+    }
+    exit(0);
+}
+
 // The main function
 int main(int argc, char const *argv[]) {
+    bool out_set = false;
+    int fi=0;
 
-    // Taking the file input, for processing
-    // string filename = "config.ini";
-    string filename = argv[1];
-    ifstream file(filename);
-    string line;
-
+    ifstream file;
     ofstream out;
 
-    // Output stream for
-    if(argc == 3)
-        out = ofstream(argv[2]);
-    else
+    // Processing the terminal flags
+    for(int i=1; i<argc; i++) {
+        string arg = argv[i];
+        if(arg == "-in")
+        // Input file
+        {
+            if(i == argc-1)
+                show_error_exit();
+            file = ifstream(argv[++i]);
+            fi = i;  
+        }
+        else if(arg == "-out")
+        // Output file
+        {
+            if(i == argc-1)
+                show_error_exit();
+            out = ofstream(argv[++i]);
+            out_set = true;
+        }
+        else if(arg == "-lapse")
+        // Lapse time
+        {
+            if(i == argc-1)
+                show_error_exit();
+            lapse = stoi(argv[++i]);
+        }
+        else
+        // Invalid Flag
+        {
+            cout << arg << "\n";
+            show_error_exit(1);
+        }
+    }
+
+    // -in flag not in command line
+    if(fi == 0) {
+        cout << "No input (config) file indicated. Exiting...\n";
+        exit(0);
+    }
+
+    // -out flag not in command line, open default out file
+    if(!out_set) {
         out = ofstream("out.txt");
+    }
+
     // Processing further if the file is in place
     if(file.is_open()) {
         process(file, out);
     }
     else {
-        cout<<"Unable to open file : "<<filename<<"\n";
+        cout<<"Unable to open file : "<<argv[fi]<<"\n";
     }
 }
