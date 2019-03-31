@@ -37,6 +37,9 @@
 #vscode
 .vscode/*
 
+# Movies
+*.mov
+
 # BinaryFiles
 opengl
 terminal
